@@ -317,6 +317,22 @@
       </div>
 
       <div class="field">
+        <label>Parcelamento</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+          <div>
+            <label for="in-parcelas" style="display:block;font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 .45rem">Qtd. parcelas</label>
+            <input type="number" id="in-parcelas" min="1" max="12" step="1" value="6" placeholder="6">
+          </div>
+          <div>
+            <label for="in-parcela-valor" style="display:block;font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 .45rem">Valor da parcela (opcional)</label>
+            <input type="text" id="in-parcela-valor" placeholder="Ex.: 31,65" inputmode="decimal">
+          </div>
+        </div>
+        <small id="parcelas-preview" style="display:block;margin-top:.35rem;color:var(--ink-soft);font-size:.78rem">Prévia: 6x sem juros (calculado do preço).</small>
+        <small>Se deixar o valor em branco, calculamos sozinho: preço ÷ parcelas. 1x esconde o texto de parcelas no site.</small>
+      </div>
+
+      <div class="field">
         <label>Forma de venda</label>
         <div class="pay">
           <input type="radio" name="pag-tipo" id="pay-whats" value="whatsapp" checked>
@@ -376,6 +392,37 @@
       }
       radios.forEach(function (r) { r.addEventListener('change', trocarPagamento); });
 
+      // Prévia do parcelamento
+      var inPreco = document.getElementById('in-preco');
+      var inParcelas = document.getElementById('in-parcelas');
+      var inParcelaValor = document.getElementById('in-parcela-valor');
+      var parcPreview = document.getElementById('parcelas-preview');
+      function precoParaNumero(s) {
+        var txt = String(s || '').trim();
+        if (!txt) return 0;
+        var n = txt.indexOf(',') >= 0 ? txt.replace(/\./g, '').replace(',', '.') : txt;
+        return parseFloat(n.replace(/[^0-9.]/g, '')) || 0;
+      }
+      function atualizarPreviaParcelas() {
+        if (!parcPreview) return;
+        var qtd = parseInt((inParcelas && inParcelas.value) || '6', 10);
+        if (isNaN(qtd) || qtd < 1) qtd = 1;
+        if (qtd > 12) qtd = 12;
+        if (qtd <= 1) { parcPreview.textContent = 'Prévia: à vista (sem parcelas no site).'; return; }
+        var val = precoParaNumero(inParcelaValor && inParcelaValor.value);
+        if (!val) {
+          var preco = precoParaNumero(inPreco && inPreco.value);
+          val = preco ? preco / qtd : 0;
+        }
+        parcPreview.textContent = val
+          ? 'Prévia: ' + qtd + 'x R$ ' + val.toFixed(2).replace('.', ',') + ' (sem juros).'
+          : 'Prévia: ' + qtd + 'x sem juros (calculado do preço).';
+      }
+      [inPreco, inParcelas, inParcelaValor].forEach(function (el) {
+        if (el) el.addEventListener('input', atualizarPreviaParcelas);
+      });
+      atualizarPreviaParcelas();
+
       // Redimensiona a foto no cliente para economizar base
       inputFoto.addEventListener('change', function () {
         var arquivo = inputFoto.files && inputFoto.files[0];
@@ -411,6 +458,13 @@
         var titulo = document.getElementById('in-titulo').value.trim();
         var descricao = document.getElementById('in-descricao').value.trim();
         var preco = document.getElementById('in-preco').value.trim();
+        var parcelasQtd = parseInt((document.getElementById('in-parcelas') || {}).value || '6', 10);
+        if (isNaN(parcelasQtd) || parcelasQtd < 1) parcelasQtd = 1;
+        if (parcelasQtd > 12) parcelasQtd = 12;
+        var parcelaValor = (document.getElementById('in-parcela-valor') || {}).value || '';
+        parcelaValor = String(parcelaValor).trim();
+        var parcelas = { qtd: parcelasQtd };
+        if (parcelaValor) parcelas.valor = parcelaValor;
         var tipo = document.getElementById('pay-whats').checked ? 'whatsapp' : 'link';
         var pagamento = { tipo: tipo };
         if (tipo === 'whatsapp') {
@@ -430,7 +484,7 @@
         fetch('/api/produtos', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ titulo: titulo, descricao: descricao, preco: preco, pagamento: pagamento, foto: fotoDataUrl })
+          body: JSON.stringify({ titulo: titulo, descricao: descricao, preco: preco, parcelas: parcelas, pagamento: pagamento, foto: fotoDataUrl })
         })
           .then(function (resp) {
             return resp.json().then(function (dados) {
@@ -441,6 +495,8 @@
           .then(function () {
             mostrarMsg('Produto cadastrado com sucesso!', true);
             form.reset();
+            if (document.getElementById('in-parcelas')) document.getElementById('in-parcelas').value = '6';
+            atualizarPreviaParcelas();
             fotoDataUrl = null;
             preview.textContent = 'Sem foto';
             preview.classList.remove('tem-foto');
@@ -468,6 +524,12 @@
               var detalhe = whats
                 ? 'wa.me/55' + String(p.pagamento.numero || '').replace(/\D/g, '')
                 : (p.pagamento && p.pagamento.url) || '';
+              var parcTxt = '';
+              if (p.parcelas && p.parcelas.qtd > 1) {
+                parcTxt = '<span>' + p.parcelas.qtd + 'x R$ ' + escapeHtml(p.parcelas.valor || '?') + '</span>';
+              } else if (p.parcelas && p.parcelas.qtd === 1) {
+                parcTxt = '<span>à vista</span>';
+              }
               var foto = p.foto ? '<img src="' + p.foto + '" alt="">' : '<img src="serum.png" alt="" style="opacity:.35">';
               return '<div class="item">'
                 + foto
@@ -475,6 +537,7 @@
                 +   '<div class="item__titulo"></div>'
                 +   '<div class="item__meta">'
                 +     '<span>R$ ' + escapeHtml(p.preco) + '</span>'
+                +     parcTxt
                 +     pill
                 +     '<span style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHtml(detalhe) + '</span>'
                 +   '</div>'

@@ -1811,11 +1811,16 @@
       grid.innerHTML = produtos.map(function (p) {
         var slug = slugify(p.titulo) + '-' + p.id;
         var preco = precoNum(p.preco);
-        var parc = preco ? '6x R$ ' + (preco/6).toFixed(2).replace('.',',') + ' (sem juros)' : '';
+        var parcQtd = (p.parcelas && parseInt(p.parcelas.qtd, 10)) || 6;
+        if (parcQtd < 1) parcQtd = 1;
+        if (parcQtd > 12) parcQtd = 12;
+        var parcVal = (p.parcelas && p.parcelas.valor) ? String(p.parcelas.valor) : '';
+        if (parcQtd > 1 && !parcVal && preco) parcVal = (preco/parcQtd).toFixed(2).replace('.',',');
+        var parc = (parcQtd > 1 && parcVal) ? parcQtd + 'x R$ ' + parcVal + ' (sem juros)' : '';
         var foto = p.foto || 'serum.png';
         var pagTipo = p.pagamento && p.pagamento.tipo || 'whatsapp';
         var pagVal = pagTipo === 'whatsapp' ? (p.pagamento.numero||'') : (p.pagamento.url||'');
-        return '<article class="product-card" aria-label="' + escapeHtml(p.titulo) + '" data-slug="' + escapeHtml(slug) + '" data-id="' + p.id + '" data-pag-tipo="' + escapeHtml(pagTipo) + '" data-pag-valor="' + escapeHtml(pagVal) + '" data-descricao="' + escapeHtml(p.descricao||'') + '">'
+        return '<article class="product-card" aria-label="' + escapeHtml(p.titulo) + '" data-slug="' + escapeHtml(slug) + '" data-id="' + p.id + '" data-pag-tipo="' + escapeHtml(pagTipo) + '" data-pag-valor="' + escapeHtml(pagVal) + '" data-descricao="' + escapeHtml(p.descricao||'') + '" data-parcelas-qtd="' + parcQtd + '" data-parcelas-valor="' + escapeHtml(parcVal) + '">'
           + '<div class="product-card__media"><img src="' + escapeHtml(foto) + '" alt="' + escapeHtml(p.titulo) + '" width="300" height="360" loading="lazy"></div>'
           + '<div class="product-card__body"><h3 class="product-card__title">' + escapeHtml(p.titulo.toUpperCase()) + '</h3>'
           + '<div class="product-card__pricing"><span class="product-card__currency">R$</span><span class="product-card__val">' + escapeHtml(String(p.preco).replace(',','.').replace(/\..*$/,'')) + '</span></div>'

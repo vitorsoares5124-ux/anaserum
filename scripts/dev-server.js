@@ -125,6 +125,23 @@ const server = http.createServer(async function (req, res) {
       const preco = (dados.preco || '').toString().trim();
       const pagamento = dados.pagamento || {};
       const foto = dados.foto;
+      let parcQtd = 6;
+      let parcValor = '';
+      if (dados.parcelas && typeof dados.parcelas === 'object') {
+        parcQtd = parseInt(dados.parcelas.qtd, 10) || 6;
+        parcValor = String(dados.parcelas.valor || '').trim();
+      } else if (dados.parcelas != null) {
+        parcQtd = parseInt(dados.parcelas, 10) || 6;
+      }
+      if (parcQtd < 1) parcQtd = 1;
+      if (parcQtd > 12) parcQtd = 12;
+      if (parcQtd > 1 && !parcValor) {
+        const txt = String(preco).trim();
+        const n = txt.indexOf(',') >= 0 ? txt.replace(/\./g, '').replace(',', '.') : txt;
+        const num = parseFloat(String(n).replace(/[^0-9.]/g, '')) || 0;
+        if (num > 0) parcValor = (num / parcQtd).toFixed(2).replace('.', ',');
+      }
+      if (parcQtd <= 1) parcValor = '';
 
       if (!titulo) return json(res, 400, { erro: 'Titulo obrigatorio' });
       if (!preco) return json(res, 400, { erro: 'Preco obrigatorio' });
@@ -160,6 +177,7 @@ const server = http.createServer(async function (req, res) {
         titulo: titulo,
         descricao: descricao,
         preco: preco,
+        parcelas: { qtd: parcQtd, valor: parcValor },
         pagamento: pagamento,
         foto: fotoPath,
         criadoEm: new Date().toISOString()
