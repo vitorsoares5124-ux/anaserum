@@ -1034,6 +1034,76 @@
       overflow: hidden;
     }
     a.product-card__btn { text-decoration: none; text-align: center; }
+        /* Modal de detalhe do produto */
+    .pmodal {
+      position: fixed; inset: 0; z-index: 80;
+      display: none; align-items: center; justify-content: center;
+      padding: 1rem;
+      background: rgba(28, 24, 15, 0.55);
+      backdrop-filter: blur(4px);
+    }
+    .pmodal.is-open { display: flex; }
+    body.modal-aberto { overflow: hidden; }
+    .pmodal__card {
+      position: relative;
+      width: min(880px, 100%);
+      max-height: calc(100dvh - 2rem);
+      overflow: auto;
+      background: var(--paper);
+      border-radius: 22px;
+      box-shadow: 0 40px 90px -30px rgba(20, 16, 5, 0.55);
+      display: grid;
+      grid-template-columns: minmax(0, 44%) 1fr;
+      animation: pmodal-in 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+    @keyframes pmodal-in {
+      from { opacity: 0; transform: translateY(16px) scale(0.985); }
+      to { opacity: 1; transform: none; }
+    }
+    .pmodal__foto {
+      background: var(--wash);
+      display: flex; align-items: center; justify-content: center;
+      min-height: 260px;
+    }
+    .pmodal__foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .pmodal__info { padding: clamp(1.25rem, 3.5vw, 2.25rem); display: flex; flex-direction: column; gap: 0.85rem; }
+    .pmodal__titulo {
+      font-family: var(--font-display); font-weight: 400;
+      font-size: clamp(1.5rem, 3vw, 2rem); line-height: 1.15;
+    }
+    .pmodal__desc { font-size: 0.98rem; line-height: 1.65; color: var(--ink-soft); white-space: pre-line; }
+    .pmodal__preco { display: flex; align-items: baseline; gap: 0.35rem; margin-top: 0.15rem; }
+    .pmodal__preco .moeda { font-size: 1rem; font-weight: 600; color: var(--ink-soft); }
+    .pmodal__preco .valor { font-size: clamp(2rem, 4vw, 2.6rem); font-weight: 700; letter-spacing: -0.02em; }
+    .pmodal__parc { font-size: 0.85rem; color: var(--ink-soft); }
+    .pmodal__comprar {
+      margin-top: 0.5rem;
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      border: none; border-radius: 14px; cursor: pointer;
+      padding: 0.95rem 1.5rem;
+      font-family: var(--font-body); font-size: 0.95rem; font-weight: 700; letter-spacing: 0.04em;
+      color: #fff; background: linear-gradient(135deg, var(--gold), #9d8400);
+      text-decoration: none;
+      box-shadow: 0 12px 26px -14px rgba(157, 132, 0, 0.7);
+      transition: transform 0.15s ease, box-shadow 0.2s ease;
+    }
+    .pmodal__comprar:hover { transform: translateY(-1px); box-shadow: 0 16px 30px -14px rgba(157,132,0,0.8); }
+    .pmodal__fechar {
+      position: absolute; top: 12px; right: 12px; z-index: 2;
+      width: 40px; height: 40px; border-radius: 999px;
+      border: 1px solid var(--line-soft); background: rgba(255,255,255,0.92);
+      color: var(--ink); font-size: 1.1rem; line-height: 1; cursor: pointer;
+      display: grid; place-items: center;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+    .pmodal__fechar:hover { border-color: var(--gold); transform: scale(1.05); }
+    #product-grid .product-card { cursor: pointer; }
+    @media (max-width: 720px) {
+      .pmodal__card { grid-template-columns: 1fr; }
+      .pmodal__foto { min-height: 220px; max-height: 42dvh; }
+      .pmodal__foto img { object-fit: contain; }
+    }
+
     /* Mobile carousel for product-grid (<= 759px) */
   @media (max-width: 759px) {
     .product-grid--carousel {
@@ -2486,6 +2556,76 @@
       })
       .catch(function () { /* modo estatico ou API fora: mantem os cards fixos */ });
   })();
+</script>
+<div class="pmodal" id="pmodal" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Detalhes do produto">
+  <div class="pmodal__card">
+    <button type="button" class="pmodal__fechar" id="pmodal-fechar" aria-label="Fechar">&#10005;</button>
+    <div class="pmodal__foto"><img id="pmodal-img" src="" alt=""></div>
+    <div class="pmodal__info">
+      <h3 class="pmodal__titulo" id="pmodal-titulo"></h3>
+      <p class="pmodal__desc" id="pmodal-desc"></p>
+      <div class="pmodal__preco"><span class="moeda">R$</span><span class="valor" id="pmodal-preco"></span></div>
+      <p class="pmodal__parc" id="pmodal-parc"></p>
+      <a class="pmodal__comprar" id="pmodal-comprar" href="#" target="_blank" rel="noopener">ADICIONE</a>
+    </div>
+  </div>
+</div>
+
+<script>
+// Modal detalhe do produto: clicar no card abre as informacoes.
+(function () {
+  var grid = document.getElementById("product-grid");
+  var modal = document.getElementById("pmodal");
+  if (!grid || !modal) return;
+  var fecharBtn = document.getElementById("pmodal-fechar");
+
+  function abrir(card) {
+    var img = card.querySelector(".product-card__media img");
+    var tituloEl = card.querySelector(".product-card__title");
+    var descEl = card.querySelector(".product-card__desc");
+    var valEl = card.querySelector(".product-card__val");
+    var parcEl = card.querySelector(".product-card__installments");
+    var linkEl = card.querySelector("a.product-card__btn");
+
+    var foto = document.getElementById("pmodal-img");
+    if (img && img.getAttribute("src")) { foto.src = img.src; foto.alt = img.alt || ""; foto.parentElement.style.display = ""; }
+    else { foto.parentElement.style.display = "none"; }
+
+    document.getElementById("pmodal-titulo").textContent = tituloEl ? tituloEl.textContent : "";
+    var desc = document.getElementById("pmodal-desc");
+    desc.textContent = descEl ? descEl.textContent : "";
+    desc.style.display = desc.textContent ? "" : "none";
+    document.getElementById("pmodal-preco").textContent = valEl ? valEl.textContent.replace(/\D/g, "") : "";
+    var parc = document.getElementById("pmodal-parc");
+    parc.textContent = parcEl ? parcEl.textContent : "";
+    parc.style.display = parc.textContent ? "" : "none";
+
+    var comprar = document.getElementById("pmodal-comprar");
+    if (linkEl) { comprar.href = linkEl.href; comprar.style.display = ""; }
+    else { comprar.style.display = "none"; }
+
+    modal.classList.add("is-open");
+    document.body.classList.add("modal-aberto");
+    modal.setAttribute("aria-hidden", "false");
+  }
+
+  function fechar() {
+    modal.classList.remove("is-open");
+    document.body.classList.remove("modal-aberto");
+    modal.setAttribute("aria-hidden", "true");
+  }
+
+  grid.addEventListener("click", function (e) {
+    // clique no botao ir direto p/ compra, sem abrir modal
+    if (e.target.closest("a[href], button")) return;
+    var card = e.target.closest(".product-card");
+    if (card) abrir(card);
+  });
+
+  modal.addEventListener("click", function (e) { if (e.target === modal) fechar(); });
+  fecharBtn.addEventListener("click", fechar);
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && modal.classList.contains("is-open")) fechar(); });
+})();
 </script>
 </body>
 </html>
