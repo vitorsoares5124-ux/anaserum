@@ -32,9 +32,12 @@
   api.adicionar = function (slug, nome, preco, extra) {
     carregar();
     extra = extra || {};
+    var qtdAdd = parseInt(extra.quantidade, 10);
+    if (!qtdAdd || qtdAdd < 1) qtdAdd = 1;
+    if (qtdAdd > 20) qtdAdd = 20;
     var achou = estado.filter(function (it) { return it.slug === slug; })[0];
-    if (achou) achou.quantidade += 1;
-    else estado.push({ slug: slug, nome: nome || slug, preco: Number(preco) || 0, quantidade: 1, pag_tipo: extra.pag_tipo || null, pag_valor: extra.pag_valor || null, foto: extra.foto || null, descricao: extra.descricao || '' });
+    if (achou) achou.quantidade += qtdAdd;
+    else estado.push({ slug: slug, nome: nome || slug, preco: Number(preco) || 0, quantidade: qtdAdd, pag_tipo: extra.pag_tipo || null, pag_valor: extra.pag_valor || null, foto: extra.foto || null, descricao: extra.descricao || '' });
     // atualiza dados se vieram depois
     if (achou && extra.pag_tipo) { achou.pag_tipo = extra.pag_tipo; achou.pag_valor = extra.pag_valor; }
     salvar();

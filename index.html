@@ -2507,72 +2507,8 @@
 })();
 </script>
 <script>
-  // Conecta a loja a base de produtos (Supabase via /api/produtos).
-  // Se a base estiver vazia ou a API fora do ar, mantem os 3 cards fixos.
-  (function () {
-    var grid = document.getElementById("product-grid");
-    if (!grid || !window.fetch) return;
-
-    function esc(s) {
-      return String(s == null ? "" : s).replace(/[&<>"'"]/g, function (c) {
-        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[c];
-      });
-    }
-
-    function precoPartes(preco) {
-      var txt = String(preco).trim().replace(/[^\d,.]/g, "");
-      var valor = txt.indexOf(",") >= 0 ? txt.replace(/\./g, "").replace(",", ".") : txt;
-      var n = parseFloat(valor);
-      if (isNaN(n)) n = 0;
-      return { inteiro: Math.floor(n), parcela: (n / 6).toFixed(2).replace(".", ",") };
-    }
-
-    function linkPagamento(p) {
-      if (p.pagamento && p.pagamento.tipo === "whatsapp") {
-        var num = String(p.pagamento.numero || "").replace(/\D/g, "");
-        if (!num) return null;
-        if (num.indexOf("55") !== 0) num = "55" + num;
-        var msg = "Ola! Tenho interesse no produto " + p.titulo + " (R$ " + p.preco + ") da DermAna.";
-        return "https://wa.me/" + num + "?text=" + encodeURIComponent(msg);
-      }
-      if (p.pagamento && p.pagamento.url) return p.pagamento.url;
-      return null;
-    }
-
-    function cardHTML(p) {
-      var preco = precoPartes(p.preco);
-      var href = linkPagamento(p);
-      var alt = esc(p.titulo);
-      var botao = href
-        ? "<a class=\"product-card__btn\" href=\"" + esc(href) + "\" target=\"_blank\" rel=\"noopener\">ADICIONE</a>"
-        : "<button type=\"button\" class=\"product-card__btn\" disabled>ADICIONE</button>";
-      var foto = p.foto
-        ? "<img src=\"" + esc(p.foto) + "\" alt=\"" + alt + "\" width=\"300\" height=\"360\" loading=\"lazy\">"
-        : "";
-      var descricao = p.descricao ? "<p class=\"product-card__desc\">" + esc(p.descricao) + "</p>" : "";
-      return "<article class=\"product-card\" aria-label=\"" + alt + "\">"
-        + "<div class=\"product-card__media\">" + foto + "</div>"
-        + "<div class=\"product-card__body\">"
-        + "<h3 class=\"product-card__title\">" + alt.toUpperCase() + "</h3>"
-        + descricao
-        + "<div class=\"product-card__pricing\">"
-        + "<span class=\"product-card__currency\">R$</span>"
-        + "<span class=\"product-card__val\">" + preco.inteiro + "</span>"
-        + "</div>"
-        + "<p class=\"product-card__installments\">6x R$ " + preco.parcela + " (sem juros)</p>"
-        + botao
-        + "</div></article>";
-    }
-
-    fetch("/api/produtos")
-      .then(function (resp) { return resp.ok ? resp.json() : null; })
-      .then(function (produtos) {
-        if (!produtos || !produtos.length) return;
-        grid.innerHTML = produtos.map(cardHTML).join("");
-      })
-      .catch(function () { /* modo estatico ou API fora: mantem os cards fixos */ });
-  })();
-</script>
+  // (removido script legado que sobrescrevia o grid sem data-slug - bug que fazia todos produtos virarem o mesmo no carrinho)
+  // O carregamento correto está no script após #product-grid (com data-slug + data-pag-tipo)
 <div class="pmodal" id="pmodal" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Detalhes do produto">
   <div class="pmodal__card">
     <button type="button" class="pmodal__fechar" id="pmodal-fechar" aria-label="Fechar">&#10005;</button>
@@ -2582,7 +2518,14 @@
       <p class="pmodal__desc" id="pmodal-desc"></p>
       <div class="pmodal__preco"><span class="moeda">R$</span><span class="valor" id="pmodal-preco"></span></div>
       <p class="pmodal__parc" id="pmodal-parc"></p>
-      <a class="pmodal__comprar" id="pmodal-comprar" href="#" onclick="event.preventDefault(); if (window.DermanaCarrinho) { var card=document.querySelector('[data-dermana-slug]'); if(card){ var slug=card.getAttribute('data-dermana-slug'); var tituloEl=card.querySelector('.product-card__title'); var titulo=tituloEl?tituloEl.textContent.trim():slug; var preco=Number(card.getAttribute('data-dermana-preco'))||0; var pagTipo=card.getAttribute('data-dermana-pag-tipo')||''; var pagValor=card.getAttribute('data-dermana-pag-valor')||''; var foto=card.getAttribute('data-dermana-foto')||''; var desc=card.getAttribute('data-dermana-desc')||''; window.DermanaCarrinho.adicionar(slug,titulo,preco,{pag_tipo:pagTipo,pag_valor:pagValor,foto:foto,descricao:desc}); } var m=document.getElementById('pmodal'); if(m) m.classList.remove('is-open'); document.body.classList.remove('modal-aberto'); if(m) m.setAttribute('aria-hidden','true'); } this.blur();">ADICIONE</a>
+      <div class="pmodal__acao-linha">
+        <div class="pmodal__qtd" aria-label="Quantidade">
+          <button type="button" class="pmodal__qtd-btn" id="pmodal-menos" aria-label="Diminuir">−</button>
+          <span class="pmodal__qtd-val" id="pmodal-qtd">1</span>
+          <button type="button" class="pmodal__qtd-btn" id="pmodal-mais" aria-label="Aumentar">+</button>
+        </div>
+        <a class="pmodal__comprar" id="pmodal-comprar" href="#" onclick="event.preventDefault(); if (window.DermanaCarrinho) { var card=document.querySelector('[data-dermana-slug]'); if(card){ var slug=card.getAttribute('data-dermana-slug'); var tituloEl=card.querySelector('.product-card__title'); var titulo=tituloEl?tituloEl.textContent.trim():slug; var preco=Number(card.getAttribute('data-dermana-preco'))||0; var pagTipo=card.getAttribute('data-dermana-pag-tipo')||''; var pagValor=card.getAttribute('data-dermana-pag-valor')||''; var foto=card.getAttribute('data-dermana-foto')||''; var desc=card.getAttribute('data-dermana-desc')||''; var qtdEl=document.getElementById('pmodal-qtd'); var qtd=qtdEl?parseInt(qtdEl.textContent,10)||1:1; window.DermanaCarrinho.adicionar(slug,titulo,preco,{pag_tipo:pagTipo,pag_valor:pagValor,foto:foto,descricao:desc,quantidade:qtd}); } var m=document.getElementById('pmodal'); if(m) m.classList.remove('is-open'); document.body.classList.remove('modal-aberto'); if(m) m.setAttribute('aria-hidden','true'); } this.blur();">ADICIONE</a>
+      </div>
     </div>
   </div>
 </div>
@@ -2656,10 +2599,33 @@
     if (pagFoto) card.setAttribute('data-dermana-foto', pagFoto);
     if (descCard) card.setAttribute('data-dermana-desc', descCard);
 
+    // reseta quantidade do modal iFood para 1
+    var qtdEl = document.getElementById('pmodal-qtd');
+    if (qtdEl) qtdEl.textContent = '1';
+
     modal.classList.add("is-open");
     document.body.classList.add("modal-aberto");
     modal.setAttribute("aria-hidden", "false");
   }
+
+  // Controles + - dentro do modal iFood
+  (function () {
+    var menos = document.getElementById('pmodal-menos');
+    var mais = document.getElementById('pmodal-mais');
+    var qtdEl2 = document.getElementById('pmodal-qtd');
+    if (menos && mais && qtdEl2) {
+      menos.addEventListener('click', function (e) {
+        e.preventDefault();
+        var n = parseInt(qtdEl2.textContent, 10) || 1;
+        if (n > 1) qtdEl2.textContent = String(n - 1);
+      });
+      mais.addEventListener('click', function (e) {
+        e.preventDefault();
+        var n = parseInt(qtdEl2.textContent, 10) || 1;
+        if (n < 20) qtdEl2.textContent = String(n + 1);
+      });
+    }
+  })();
 
   function fechar() {
     modal.classList.remove("is-open");

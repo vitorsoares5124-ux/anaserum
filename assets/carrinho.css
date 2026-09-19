@@ -309,5 +309,39 @@
 
 .cart-bar__ver:hover { background: var(--gold-bright); }
 
-/* ---- Stepper de quantidade no modal do produto ---- */
-.pmodal__stepper { margin-top: .1rem; }
+/* ---- Stepper de quantidade no modal do produto (iFood) ---- */
+.pmodal__qtd {
+  display: inline-flex;
+  align-items: center;
+  gap: .15rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+  margin: .9rem 0 .3rem;
+}
+.pmodal__qtd-btn {
+  width: 38px;
+  height: 38px;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+  line-height: 1;
+  transition: color .15s ease, background .15s ease;
+}
+.pmodal__qtd-btn:hover { color: var(--gold); background: rgba(184,156,0,.08); }
+.pmodal__qtd-val {
+  min-width: 32px;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.pmodal__acao-linha {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: .6rem;
+}
+.pmodal__acao-linha .pmodal__comprar { flex: 1; }
