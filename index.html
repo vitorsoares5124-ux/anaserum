@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="/assets/carrinho.css">
 <style>
   :root {
     --paper: #FFFFFF;
@@ -1639,6 +1640,13 @@
         <li><a href="#contato">Contato</a></li>
       </ul>
       <a class="btn btn--gold header__cta" href="#produtos">Comprar</a>
+
+      <!-- Botão do carrinho (desktop) - estilo iFood -->
+      <button class="cart-trigger" aria-label="Abrir carrinho" type="button">
+        <span class="cart-trigger__icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-13z"/><path d="M6 6L5 2H2"/><circle cx="9" cy="20" r="1.8"/><circle cx="18" cy="20" r="1.8"/></svg></span>
+        <span class="cart-trigger__badge pmodal__badge"></span>
+      </button>
+
       <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menu">
         <span></span>
       </button>
@@ -1769,55 +1777,63 @@
         </div>
       </div>
 
-      <div class="product-grid product-grid--carousel reveal-target" id="product-grid">
-        <article class="product-card" aria-label="Renova Skin">
-          <div class="product-card__media">
-            <img src="produto-renova-skin.jpg" alt="DermAna Renova Skin" width="300" height="360" loading="lazy">
-          </div>
-          <div class="product-card__body">
-            <h3 class="product-card__title">RENOVA SKIN</h3>
-            <div class="product-card__pricing">
-              <span class="product-card__currency">R$</span>
-              <span class="product-card__val">89</span>
-            </div>
-            <p class="product-card__installments">6x R$ 14,83 (sem juros)</p>
-            <button type="button" class="product-card__btn">ADICIONE</button>
-          </div>
-        </article>
-
-        <article class="product-card" aria-label="Sérum Clareador">
-          <div class="product-card__media">
-            <img src="produto-serum-clareador.jpg" alt="DermAna Sérum Clareador" width="300" height="360" loading="lazy">
-          </div>
-          <div class="product-card__body">
-            <h3 class="product-card__title">SÉRUM CLAREADOR</h3>
-            <div class="product-card__pricing">
-              <span class="product-card__currency">R$</span>
-              <span class="product-card__val">69</span>
-            </div>
-            <p class="product-card__installments">6x R$ 11,50 (sem juros)</p>
-            <button type="button" class="product-card__btn">ADICIONE</button>
-          </div>
-        </article>
-
-        <article class="product-card" aria-label="Sabonete Renovador">
-          <div class="product-card__media">
-            <img src="produto-sabonete-renovador.jpg" alt="DermAna Sabonete Renovador" width="300" height="360" loading="lazy">
-          </div>
-          <div class="product-card__body">
-            <h3 class="product-card__title">SABONETE RENOVADOR</h3>
-            <div class="product-card__pricing">
-              <span class="product-card__currency">R$</span>
-              <span class="product-card__val">59</span>
-            </div>
-            <p class="product-card__installments">6x R$ 9,83 (sem juros)</p>
-            <button type="button" class="product-card__btn">ADICIONE</button>
-          </div>
-        </article>
+      <div class="product-grid product-grid--carousel reveal-target" id="product-grid" aria-live="polite">
+        <div class="product-grid__status" id="product-grid-status" style="grid-column:1/-1;text-align:center;color:var(--ink-soft);padding:2rem 1rem">Carregando produtos…</div>
       </div>
       <noscript><style>[data-reveal] { opacity: 1 !important; transform: none !important; } .reveal-target .product-card { opacity: 1; transform: none; }</style></noscript>
     </div>
   </section>
+
+  <!-- Script: carrega produtos reais do admin (Supabase via /api/produtos) -->
+  <script>
+  (function () {
+    var grid = document.getElementById('product-grid');
+    var statusEl = document.getElementById('product-grid-status');
+    if (!grid) return;
+
+    function slugify(t) {
+      return String(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'').slice(0,60) || 'produto';
+    }
+    function precoNum(s) {
+      var n = String(s||'').replace(/\./g,'').replace(',','.').replace(/[^0-9.]/g,'');
+      return parseFloat(n) || 0;
+    }
+    function escapeHtml(s) {
+      return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});
+    }
+
+    function render(produtos) {
+      if (!produtos || !produtos.length) {
+        if (statusEl) statusEl.innerHTML = 'Nenhum produto cadastrado ainda.<br><span style="font-size:.85rem">Cadastre no <a href="/admin.html" style="color:var(--gold)">painel admin</a>.</span>';
+        return;
+      }
+      if (statusEl) statusEl.remove();
+      grid.innerHTML = produtos.map(function (p) {
+        var slug = slugify(p.titulo) + '-' + p.id;
+        var preco = precoNum(p.preco);
+        var parc = preco ? '6x R$ ' + (preco/6).toFixed(2).replace('.',',') + ' (sem juros)' : '';
+        var foto = p.foto || 'serum.png';
+        var pagTipo = p.pagamento && p.pagamento.tipo || 'whatsapp';
+        var pagVal = pagTipo === 'whatsapp' ? (p.pagamento.numero||'') : (p.pagamento.url||'');
+        return '<article class="product-card" aria-label="' + escapeHtml(p.titulo) + '" data-slug="' + escapeHtml(slug) + '" data-id="' + p.id + '" data-pag-tipo="' + escapeHtml(pagTipo) + '" data-pag-valor="' + escapeHtml(pagVal) + '" data-descricao="' + escapeHtml(p.descricao||'') + '">'
+          + '<div class="product-card__media"><img src="' + escapeHtml(foto) + '" alt="' + escapeHtml(p.titulo) + '" width="300" height="360" loading="lazy"></div>'
+          + '<div class="product-card__body"><h3 class="product-card__title">' + escapeHtml(p.titulo.toUpperCase()) + '</h3>'
+          + '<div class="product-card__pricing"><span class="product-card__currency">R$</span><span class="product-card__val">' + escapeHtml(String(p.preco).replace(',','.').replace(/\..*$/,'')) + '</span></div>'
+          + (parc ? '<p class="product-card__installments">' + parc + '</p>' : '')
+          + '<button type="button" class="product-card__btn">ADICIONE</button></div></article>';
+      }).join('');
+      // re-dispatch para handlers de modal/carrinho que usam querySelectorAll
+      try { document.dispatchEvent(new CustomEvent('dermana:produtos-carregados')); } catch(e){}
+    }
+
+    fetch('/api/produtos').then(function(r){ return r.json(); }).then(function(d){
+      if (Array.isArray(d)) render(d);
+      else render([]);
+    }).catch(function(){
+      if (statusEl) statusEl.textContent = 'Não foi possível carregar os produtos. Tente novamente.';
+    });
+  })();
+  </script>
 
   <!-- 5. Resultados Clínicos & Depoimentos -->
   <section class="section section--tighter testimonials-section" id="depoimentos" aria-labelledby="depoimentos-title">
@@ -2566,7 +2582,32 @@
       <p class="pmodal__desc" id="pmodal-desc"></p>
       <div class="pmodal__preco"><span class="moeda">R$</span><span class="valor" id="pmodal-preco"></span></div>
       <p class="pmodal__parc" id="pmodal-parc"></p>
-      <a class="pmodal__comprar" id="pmodal-comprar" href="#" target="_blank" rel="noopener">ADICIONE</a>
+      <a class="pmodal__comprar" id="pmodal-comprar" href="#" onclick="event.preventDefault(); if (window.DermanaCarrinho) { var card=document.querySelector('[data-dermana-slug]'); if(card){ var slug=card.getAttribute('data-dermana-slug'); var tituloEl=card.querySelector('.product-card__title'); var titulo=tituloEl?tituloEl.textContent.trim():slug; var preco=Number(card.getAttribute('data-dermana-preco'))||0; var pagTipo=card.getAttribute('data-dermana-pag-tipo')||''; var pagValor=card.getAttribute('data-dermana-pag-valor')||''; var foto=card.getAttribute('data-dermana-foto')||''; var desc=card.getAttribute('data-dermana-desc')||''; window.DermanaCarrinho.adicionar(slug,titulo,preco,{pag_tipo:pagTipo,pag_valor:pagValor,foto:foto,descricao:desc}); } var m=document.getElementById('pmodal'); if(m) m.classList.remove('is-open'); document.body.classList.remove('modal-aberto'); if(m) m.setAttribute('aria-hidden','true'); } this.blur();">ADICIONE</a>
+    </div>
+  </div>
+</div>
+
+<!-- Drawer do carrinho (painel lateral) -->
+<div class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Carrinho">
+  <div class="cart-drawer__overlay" id="cart-drawer-overlay"></div>
+  <div class="cart-drawer__inner">
+    <div class="cart-drawer__head">
+      <h2 class="cart-drawer__titulo">Carrinho</h2>
+      <button class="cart-drawer__fechar" aria-label="Fechar carrinho">&#10005;</button>
+    </div>
+    <div class="cart-drawer__body">
+      <div class="cart-drawer__vazio">
+      Ninguem adicionou nada ao carrinho ainda.
+      </div>
+      <div class="cart-drawer__itens" id="cart-drawer-itens">
+      </div>
+    </div>
+    <div class="cart-drawer__foot">
+      <div class="cart-drawer__total-linha">
+        <span class="cart-drawer__total-label">Total</span>
+        <span class="cart-drawer__total-val" id="cart-drawer-total">R$ 0</span>
+      </div>
+      <button class="btn-cart-finalizar" id="btn-cart-finalizar" disabled>Finalizar pedido</button>
     </div>
   </div>
 </div>
@@ -2585,7 +2626,6 @@
     var descEl = card.querySelector(".product-card__desc");
     var valEl = card.querySelector(".product-card__val");
     var parcEl = card.querySelector(".product-card__installments");
-    var linkEl = card.querySelector("a.product-card__btn");
 
     var foto = document.getElementById("pmodal-img");
     if (img && img.getAttribute("src")) { foto.src = img.src; foto.alt = img.alt || ""; foto.parentElement.style.display = ""; }
@@ -2601,8 +2641,24 @@
     parc.style.display = parc.textContent ? "" : "none";
 
     var comprar = document.getElementById("pmodal-comprar");
-    if (linkEl) { comprar.href = linkEl.href; comprar.style.display = ""; }
-    else { comprar.style.display = "none"; }
+    comprar.style.display = "";
+    comprar.removeAttribute("href");
+
+    // iFood: armazena referencia do produto para ADICIONE do modal
+    var slug = card.getAttribute('data-slug') || '';
+    var precoNum = valEl ? Number(valEl.textContent.replace(/\D/g, '')) : 0;
+    var pagTipo = card.getAttribute('data-pag-tipo') || '';
+    var pagValor = card.getAttribute('data-pag-valor') || '';
+    var pagFoto = (card.querySelector('.product-card__media img')||{}).src || '';
+    var descCard = card.getAttribute('data-descricao') || (descEl && descEl.textContent) || '';
+    // limpa marcacao anterior e marca o atual
+    document.querySelectorAll('[data-dermana-slug]').forEach(function (el) { el.removeAttribute('data-dermana-slug'); el.removeAttribute('data-dermana-preco'); el.removeAttribute('data-dermana-pag-tipo'); el.removeAttribute('data-dermana-pag-valor'); });
+    card.setAttribute('data-dermana-slug', slug);
+    card.setAttribute('data-dermana-preco', String(precoNum));
+    if (pagTipo) card.setAttribute('data-dermana-pag-tipo', pagTipo);
+    if (pagValor) card.setAttribute('data-dermana-pag-valor', pagValor);
+    if (pagFoto) card.setAttribute('data-dermana-foto', pagFoto);
+    if (descCard) card.setAttribute('data-dermana-desc', descCard);
 
     modal.classList.add("is-open");
     document.body.classList.add("modal-aberto");
@@ -2616,16 +2672,232 @@
   }
 
   grid.addEventListener("click", function (e) {
-    // clique no botao ir direto p/ compra, sem abrir modal
-    if (e.target.closest("a[href], button")) return;
     var card = e.target.closest(".product-card");
-    if (card) abrir(card);
+    if (!card) return;
+    // iFood: tanto clique no card quanto no ADICIONE abre o modal (não vai direto pro carrinho)
+    // excessao: se for link externo real, deixa passar
+    var linkExterno = e.target.closest("a[href^='http']");
+    if (linkExterno) return;
+    e.preventDefault();
+    abrir(card);
   });
+
+  // expõe abrir para o handler iFood dos botoes
+  window._dermanaAbrirModal = abrir;
 
   modal.addEventListener("click", function (e) { if (e.target === modal) fechar(); });
   fecharBtn.addEventListener("click", fechar);
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && modal.classList.contains("is-open")) fechar(); });
 })();
+
+// ---- Garante que botoes ADICIONE também abram modal (delegação para produtos dinâmicos do admin) ----
+  (function () {
+    var grid2 = document.getElementById('product-grid');
+    if (grid2) {
+      grid2.addEventListener('click', function (e) {
+        var btn = e.target.closest('.product-card__btn');
+        if (!btn) return;
+        e.preventDefault();
+        e.stopPropagation();
+        var card = btn.closest('.product-card');
+        if (!card) return;
+        if (window._dermanaAbrirModal) window._dermanaAbrirModal(card);
+      });
+    }
+    // também escuta produtos carregados dinamicamente
+    document.addEventListener('dermana:produtos-carregados', function () {
+      // nada extra necessário por causa da delegação
+    });
+  })();
+
+// ---- Inicializa o sistema do carrinho (garante ordem antes do drawer - fix race) ----
+  (function () {
+    if (window.DermanaCarrinho) return;
+    var s = document.createElement('script');
+    s.src = '/assets/carrinho-parte-1.js';
+    s.async = false;
+    // insere antes do script atual para bloquear parse até carregar
+    var cur = document.currentScript;
+    if (cur && cur.parentNode) cur.parentNode.insertBefore(s, cur.nextSibling);
+    else document.head.appendChild(s);
+  })();
+
+// ---- Manipuladores do drawer do carrinho ----
+  (function () {
+    var trigger = document.querySelector('.cart-trigger');
+    var drawer = document.getElementById('cart-drawer');
+    var overlay = document.getElementById('cart-drawer-overlay');
+    var fechBtn = drawer.querySelector('.cart-drawer__fechar');
+    var itensEl = document.getElementById('cart-drawer-itens');
+    var totalEl = document.getElementById('cart-drawer-total');
+    var finalizarBtn = document.getElementById('btn-cart-finalizar');
+
+    function abrir() {
+      if (drawer) drawer.classList.add('is-open');
+      if (overlay) overlay.classList.add('is-open');
+      document.body.classList.add('modal-aberto');
+    }
+
+    function fechar() {
+      if (drawer) drawer.classList.remove('is-open');
+      if (overlay) overlay.classList.remove('is-open');
+      document.body.classList.remove('modal-aberto');
+    }
+
+    if (trigger) trigger.addEventListener('click', abrir);
+    if (fechBtn) fechBtn.addEventListener('click', fechar);
+    if (overlay) overlay.addEventListener('click', function (e) { if (e.target === overlay) fechar(); });
+
+    // Atualizar UI quando o carrinho mudar (com fallback para race async)
+    function registrarAoMudar() {
+      if (!window.DermanaCarrinho) return false;
+      window.DermanaCarrinho.aoMudar(function () {
+        var itens = window.DermanaCarrinho.itens();
+        var total = window.DermanaCarrinho.total();
+
+        // Atualizar badge (seletores do header)
+        var badges = document.querySelectorAll('.pmodal__badge, .cart-trigger__badge');
+        badges.forEach(function (b) {
+          var n = itens.reduce(function (t, it) { return t + (it.quantidade || 0); }, 0);
+          b.textContent = n;
+          b.classList.toggle('is-visible', n > 0);
+        });
+
+        // Atualizar drawer
+        if (itens.length === 0) {
+          if (itensEl) itensEl.innerHTML = '<div class="cart-drawer__vazio">Ninguem adicionou nada ao carrinho ainda.</div>';
+          if (totalEl) totalEl.textContent = 'R$ 0';
+          if (finalizarBtn) finalizarBtn.disabled = true;
+        } else {
+          if (itensEl) itensEl.innerHTML = itens.map(function (it) {
+            var fotoSrc = it.foto ? it.foto : 'https://via.placeholder.com/80x100?text=' + encodeURIComponent(it.nome);
+            return '<div class="cart-item">' +
+              '<div class="cart-item__foto"><img src="' + fotoSrc + '" alt="' + it.nome + '" width="80" height="100" loading="lazy" style="width:62px;height:74px;object-fit:cover;border-radius:10px"></div>' +
+              '<div class="cart-item__info">' +
+                '<p class="cart-item__nome">' + it.nome + '</p>' +
+                '<div class="cart-item__preco-linha"><b>R$ ' + it.preco.toFixed(2) + '</b> <span class="cart-item__qtd">x' + (it.quantidade || 1) + '</span></div>' +
+              '</div>' +
+              '<button class="cart-item__remover" data-slug="' + it.slug + '">remover</button>' +
+            '</div>';
+          }).join('');
+
+          if (totalEl) totalEl.textContent = 'R$ ' + total.toFixed(2);
+          if (finalizarBtn) finalizarBtn.disabled = false;
+        }
+      });
+      return true;
+    }
+    if (!registrarAoMudar()) {
+      document.addEventListener('dermana:carrinho-pronto', registrarAoMudar);
+      // fallback polling se evento não disparar
+      var tent = 0;
+      var iv = setInterval(function () {
+        if (registrarAoMudar() || tent++ > 20) clearInterval(iv);
+      }, 150);
+    }
+
+    // Remover item do carrinho (do drawer)
+    if (itensEl) {
+      itensEl.addEventListener('click', function (e) {
+        if (e.target.classList.contains('cart-item__remover')) {
+          var slug = e.target.getAttribute('data-slug');
+          if (slug && window.DermanaCarrinho) {
+            window.DermanaCarrinho.remover(slug);
+          }
+        }
+      });
+    }
+
+    // Finalizar pedido - suporta produtos do admin (whatsapp/link) e legado Nuvemshop
+    if (finalizarBtn) {
+      finalizarBtn.addEventListener('click', function () {
+        if (!window.DermanaCarrinho || window.DermanaCarrinho.itens().length === 0) {
+          alert('Seu carrinho está vazio.');
+          return;
+        }
+        var itens = window.DermanaCarrinho.itens();
+        var temAdmin = itens.some(function (it) { return it.pag_tipo; });
+
+        if (temAdmin) {
+          // Fluxo admin: usa pagamento cadastrado no painel (sem Nuvemshop)
+          var nomeCompleto2 = (prompt('Digite seu nome completo:') || '').trim();
+          if (!nomeCompleto2) return;
+          var total = window.DermanaCarrinho.total();
+          var linhas = itens.map(function (it) { return '- ' + it.nome + ' x' + (it.quantidade||1) + ' (R$ ' + Number(it.preco).toFixed(2).replace('.',',') + ')'; }).join('\n');
+          var tipos = {}; itens.forEach(function (it) { if (it.pag_tipo) tipos[it.pag_tipo] = (tipos[it.pag_tipo]||0)+1; });
+          var whatsItens = itens.filter(function (it) { return it.pag_tipo === 'whatsapp'; });
+          var linkItens = itens.filter(function (it) { return it.pag_tipo === 'link'; });
+
+          if (whatsItens.length && !linkItens.length) {
+            // só WhatsApp -> abre wa.me do primeiro produto com resumo
+            var num = (whatsItens[0].pag_valor||'').replace(/\D/g,'');
+            if (!num) { alert('Número de WhatsApp não configurado para este produto.'); return; }
+            var msg = 'Olá! Sou ' + nomeCompleto2 + ' e quero finalizar meu pedido DermAna:\n' + linhas + '\nTotal: R$ ' + total.toFixed(2).replace('.',',');
+            window.open('https://wa.me/55' + num + '?text=' + encodeURIComponent(msg), '_blank');
+            return;
+          }
+          if (linkItens.length && !whatsItens.length) {
+            var url = linkItens[0].pag_valor;
+            if (!/^https?:\/\//i.test(url)) { alert('Link de pagamento inválido para este produto.'); return; }
+            // se todos links iguais, abre um; se diferentes avisa
+            var unicos = {}; linkItens.forEach(function (it) { unicos[it.pag_valor]=true; });
+            if (Object.keys(unicos).length === 1) {
+              window.open(url, '_blank');
+            } else {
+              var msgLink = 'Você tem ' + linkItens.length + ' produtos com links diferentes. Abrindo o primeiro link. Demais links:\n' + linkItens.map(function (it){ return it.nome + ': ' + it.pag_valor; }).join('\n');
+              alert(msgLink);
+              window.open(url, '_blank');
+            }
+            return;
+          }
+          // misto whatsapp + link
+          var numMisto = (whatsItens[0] && whatsItens[0].pag_valor || '').replace(/\D/g,'');
+          var msgMisto = 'Olá! Sou ' + nomeCompleto2 + ' e quero finalizar meu pedido DermAna (carrinho misto):\n' + linhas + '\nTotal: R$ ' + total.toFixed(2).replace('.',',') + '\n\nLinks de pagamento:\n' + linkItens.map(function(it){ return it.nome + ': ' + it.pag_valor; }).join('\n');
+          if (numMisto) window.open('https://wa.me/55' + numMisto + '?text=' + encodeURIComponent(msgMisto), '_blank');
+          else alert(msgMisto);
+          return;
+        }
+
+        // Fluxo legado Nuvemshop (produtos antigos com variant_id)
+        var nomeCompleto = (prompt('Digite seu nome completo:') || '').trim();
+        if (!nomeCompleto) return;
+        var partes = nomeCompleto.split(/\s+/);
+        var nome = partes[0] || nomeCompleto;
+        var sobrenome = partes.slice(1).join(' ') || partes[0] || 'Dermana';
+        var email = (prompt('Digite seu e-mail:') || '').trim();
+        if (!email) return;
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+          alert('Por favor, digite um e-mail válido.');
+          return;
+        }
+        fetch('/api/pedido', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nome: nome,
+            sobrenome: sobrenome,
+            email: email,
+            itens: window.DermanaCarrinho.itens().map(function (it) { return { slug: it.slug, quantidade: it.quantidade || 1, quantity: it.quantidade || 1 }; })
+          })
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (dados) {
+          if (dados.erros) {
+            alert('Erro ao finalizar: ' + dados.erros.join(', '));
+            return;
+          }
+          if (dados.checkout_url) {
+            window.location.href = dados.checkout_url;
+          } else {
+            alert('Resposta inesperada do servidor: ' + JSON.stringify(dados));
+          }
+        })
+        .catch(function (err) {
+          alert('Erro de conexão: ' + err.message);
+        });
+      });
+    }
+  })();
 </script>
 </body>
 </html>
