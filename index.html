@@ -2714,7 +2714,7 @@
   (function () {
     if (window.DermanaCarrinho) return;
     var s = document.createElement('script');
-    s.src = '/assets/carrinho-parte-1.js';
+    s.src = '/assets/carrinho-parte-1.js?v=ec4426a';
     s.async = false;
     // insere antes do script atual para bloquear parse até carregar
     var cur = document.currentScript;
@@ -2797,28 +2797,45 @@
       }, 150);
     }
 
-    // Controles de quantidade e exclusão (drawer)
-    if (itensEl) {
-      itensEl.addEventListener('click', function (e) {
-        var btnQtd = e.target.closest('.cart-qtd__btn');
-        if (btnQtd) {
-          var slug = btnQtd.getAttribute('data-slug');
-          var acao = btnQtd.getAttribute('data-acao');
-          if (slug && window.DermanaCarrinho) {
+    // Controles de quantidade e exclusão (drawer) - delegação no document para garantir funcionamento
+    function handleCarrinhoClick(e) {
+      var btnQtd = e.target.closest('.cart-qtd__btn');
+      if (btnQtd) {
+        var slug = btnQtd.getAttribute('data-slug');
+        var acao = btnQtd.getAttribute('data-acao');
+        if (slug && window.DermanaCarrinho) {
+          if (typeof window.DermanaCarrinho.alterarQuantidade === 'function') {
             if (acao === 'mais') window.DermanaCarrinho.alterarQuantidade(slug, 1);
             else if (acao === 'menos') window.DermanaCarrinho.alterarQuantidade(slug, -1);
+          } else {
+            // fallback se JS em cache antigo sem alterarQuantidade
+            var itens = window.DermanaCarrinho.itens();
+            var achou = itens.filter(function(it){ return it.slug===slug; })[0];
+            if (achou) {
+              if (acao === 'mais') window.DermanaCarrinho.adicionar(slug, achou.nome, achou.preco);
+              else {
+                // menos: remove e readiciona quantidade-1
+                window.DermanaCarrinho.remover(slug);
+                var novaQtd = (achou.quantidade||1) - 1;
+                for (var i=0;i<novaQtd;i++) window.DermanaCarrinho.adicionar(slug, achou.nome, achou.preco, {pag_tipo: achou.pag_tipo, pag_valor: achou.pag_valor, foto: achou.foto});
+              }
+            }
           }
-          return;
         }
-        var rem = e.target.closest('.cart-item__remover');
-        if (rem) {
-          var slug2 = rem.getAttribute('data-slug');
-          if (slug2 && window.DermanaCarrinho) {
-            window.DermanaCarrinho.remover(slug2);
-          }
+        e.preventDefault(); e.stopPropagation();
+        return;
+      }
+      var rem = e.target.closest('.cart-item__remover');
+      if (rem) {
+        var slug2 = rem.getAttribute('data-slug');
+        if (slug2 && window.DermanaCarrinho) {
+          window.DermanaCarrinho.remover(slug2);
         }
-      });
+        e.preventDefault(); e.stopPropagation();
+      }
     }
+    if (itensEl) itensEl.addEventListener('click', handleCarrinhoClick);
+    document.addEventListener('click', handleCarrinhoClick);
 
     // Finalizar pedido - suporta produtos do admin (whatsapp/link) e legado Nuvemshop
     if (finalizarBtn) {
