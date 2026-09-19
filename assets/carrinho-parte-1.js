@@ -46,6 +46,17 @@
     salvar();
   };
 
+  api.alterarQuantidade = function (slug, delta) {
+    carregar();
+    var achou = estado.filter(function (it) { return it.slug === slug; })[0];
+    if (!achou) return;
+    achou.quantidade = (achou.quantidade || 1) + delta;
+    if (achou.quantidade <= 0) {
+      estado = estado.filter(function (it) { return it.slug !== slug; });
+    }
+    salvar();
+  };
+
   api.total = function () {
     carregar();
     return estado.reduce(function (t, it) { return t + (it.preco || 0) * (it.quantidade || 0); }, 0);

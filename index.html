@@ -2775,9 +2775,10 @@
               '<div class="cart-item__foto"><img src="' + fotoSrc + '" alt="' + it.nome + '" width="80" height="100" loading="lazy" style="width:62px;height:74px;object-fit:cover;border-radius:10px"></div>' +
               '<div class="cart-item__info">' +
                 '<p class="cart-item__nome">' + it.nome + '</p>' +
-                '<div class="cart-item__preco-linha"><b>R$ ' + it.preco.toFixed(2) + '</b> <span class="cart-item__qtd">x' + (it.quantidade || 1) + '</span></div>' +
+                '<div class="cart-item__preco-linha"><b>R$ ' + it.preco.toFixed(2) + '</b></div>' +
+                '<div class="cart-item__acoes"><div class="cart-item__qtd"><button type="button" class="cart-qtd__btn" data-acao="menos" data-slug="' + it.slug + '" aria-label="Diminuir">−</button><span>' + (it.quantidade || 1) + '</span><button type="button" class="cart-qtd__btn" data-acao="mais" data-slug="' + it.slug + '" aria-label="Aumentar">+</button></div></div>' +
               '</div>' +
-              '<button class="cart-item__remover" data-slug="' + it.slug + '">remover</button>' +
+              '<button class="cart-item__remover" data-slug="' + it.slug + '" aria-label="Excluir item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></button>' +
             '</div>';
           }).join('');
 
@@ -2796,13 +2797,24 @@
       }, 150);
     }
 
-    // Remover item do carrinho (do drawer)
+    // Controles de quantidade e exclusão (drawer)
     if (itensEl) {
       itensEl.addEventListener('click', function (e) {
-        if (e.target.classList.contains('cart-item__remover')) {
-          var slug = e.target.getAttribute('data-slug');
+        var btnQtd = e.target.closest('.cart-qtd__btn');
+        if (btnQtd) {
+          var slug = btnQtd.getAttribute('data-slug');
+          var acao = btnQtd.getAttribute('data-acao');
           if (slug && window.DermanaCarrinho) {
-            window.DermanaCarrinho.remover(slug);
+            if (acao === 'mais') window.DermanaCarrinho.alterarQuantidade(slug, 1);
+            else if (acao === 'menos') window.DermanaCarrinho.alterarQuantidade(slug, -1);
+          }
+          return;
+        }
+        var rem = e.target.closest('.cart-item__remover');
+        if (rem) {
+          var slug2 = rem.getAttribute('data-slug');
+          if (slug2 && window.DermanaCarrinho) {
+            window.DermanaCarrinho.remover(slug2);
           }
         }
       });
