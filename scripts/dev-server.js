@@ -1,11 +1,13 @@
 // Servidor local DermAna - site estatico + painel /admin + API de produtos
 // Se SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY estiverem no .env, usa o Supabase.
 // Caso contrario, cai na base local: data/produtos.json (fotos em uploads/).
+// ATENCAO: este arquivo e APENAS para desenvolvimento local (node scripts/dev-server.js).
+// Na Vercel, as rotas ficam em /api/*.js — este arquivo nao entra no deploy como funcao.
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const ROOT = __dirname;
+const ROOT = path.join(__dirname, '..');
 const PORT = process.env.PORT || 3100;
 
 // ---- .env manual (sem dependencias) ----
@@ -18,8 +20,8 @@ const PORT = process.env.PORT || 3100;
   });
 })();
 
-const supa = require('./lib/supabase');
-const handlers = require('./lib/handlers');
+const supa = require('../lib/supabase');
+const handlers = require('../lib/handlers');
 const USANDO_SUPABASE = supa.configurado();
 
 const DATA_DIR = path.join(ROOT, 'data');
