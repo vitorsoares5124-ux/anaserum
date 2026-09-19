@@ -1,0 +1,22 @@
+# Segredos - NUNCA commitar
+.env
+.env.local
+.env.*.local
+
+# Node
+node_modules/
+*.log
+
+# Preenchidas pelo desenvolvimento local (fallback sem Supabase)
+data/
+uploads/
+
+# Deploy
+.vercel
+
+# Arquivos do sistema
+Thumbs.db
+.DS_Store
+
+# Skill local (nao faz parte do site)
+avoid-ai-design/

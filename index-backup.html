@@ -1,0 +1,2298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dermana Skin Care — Protocolos clínicos para manchas e melasma</title>
+<meta name="description" content="Protocolos de tratamento de manchas, hiperpigmentação e melasma desenvolvidos na prática clínica da Estética Ana Gonçalves, em Ubá, Minas Gerais.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="logo.png" type="image/png">
+<style>
+  :root {
+    --paper: #FFFFFF;
+    --ink: #242424;
+    --ink-soft: #5C5C5C;
+    --gold: #B89C00;
+    --gold-bright: #C9AB19;
+    --line: rgba(36, 36, 36, 0.16);
+    --line-soft: rgba(36, 36, 36, 0.08);
+    --wash: #F7F6F3;
+    --portrait-mat: clamp(12px, 1.2vw + 4px, 20px);
+    --font-display: "Libre Caslon Text", "Georgia", serif;
+    --font-body: "Hanken Grotesk", system-ui, sans-serif;
+    --header-h: 68px;
+    --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--header-h) + 8px);
+    overflow-x: clip;
+  }
+
+  body {
+    margin: 0;
+    overflow-x: clip;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  a { color: inherit; }
+  img { display: block; max-width: 100%; }
+
+  ::selection { background: var(--gold); color: var(--paper); }
+
+  :focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+  }
+
+  .skip-link {
+    position: absolute;
+    top: -100px;
+    left: 16px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 10px 16px;
+    font-size: 0.9rem;
+    z-index: 100;
+    text-decoration: none;
+    transition: top 0.2s var(--ease);
+  }
+  .skip-link:focus { top: 12px; }
+
+  /* ---------- Masthead / signature ---------- */
+
+  .gold-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gold);
+    z-index: 60;
+  }
+
+  /* ---------- Header ---------- */
+
+  .header {
+    position: fixed;
+    top: 3px;
+    left: 0;
+    right: 0;
+    height: var(--header-h);
+    background: var(--paper);
+    border-bottom: 1px solid var(--line-soft);
+    z-index: 50;
+  }
+
+  .header__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .header__logo {
+    height: 38px;
+    width: auto;
+    flex: 0 0 auto;
+  }
+
+  .header__nav {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-left: auto;
+  }
+
+  .header__links {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .header__links a {
+    position: relative;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--ink);
+    padding: 6px 0;
+  }
+
+  .header__links a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s var(--ease);
+  }
+  .header__links a:hover::after,
+  .header__links a:focus-visible::after { transform: scaleX(1); }
+
+  .btn {
+    display: inline-block;
+    border: 1px solid transparent;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    padding: 13px 22px;
+    cursor: pointer;
+    transition: background-color 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease), transform 0.15s var(--ease);
+  }
+  .btn:active { transform: translateY(1px); }
+
+  .btn--gold {
+    background: var(--gold);
+    color: var(--ink);
+  }
+  .btn--gold:hover {
+    background: var(--gold-bright);
+  }
+  .btn--ink {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .btn--ink:hover {
+    background: #121212;
+  }
+  .btn--ghost {
+    background: transparent;
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+  .btn--ghost:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .btn--light {
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .btn--light:hover {
+    background: var(--gold-bright);
+  }
+
+  .btn--insta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    border: none;
+    background-color: #D62976;
+    background-image: linear-gradient(45deg, #FEDA75, #FA7E1E, #D62976, #962FBF, #4F5BD5);
+    background-size: 160% 160%;
+    background-position: 0% 50%;
+    color: #fff;
+    border-radius: 999px;
+    padding: 14px 26px;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
+  }
+  .btn--insta:hover {
+    background-position: 100% 50%;
+    filter: brightness(1.08);
+  }
+  .btn--insta .btn__icon {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+    flex: 0 0 auto;
+  }
+
+  /* ---------- Results (Instagram) ---------- */
+
+  .results-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.75rem;
+  }
+  .results-header .section__subtitle {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--ink-soft);
+    max-width: 62ch;
+  }
+
+  .results-media {
+    position: relative;
+    margin: clamp(6rem, 4rem + 6vw, 8.5rem) auto 0;
+    width: min(400px, 100%);
+  }
+  .results-video {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.18);
+  }
+  .results-video iframe,
+  .results-video video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+    object-fit: cover;
+  }
+  .results-video__media { z-index: 1; }
+  .results-video__tap {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at center, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.06));
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    color: #fff;
+    transition: opacity 0.28s ease, background 0.28s ease;
+  }
+  .results-video__tap svg {
+    width: 76px;
+    height: 76px;
+    fill: #fff;
+    filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.45));
+    pointer-events: none;
+  }
+  .results-video.is-playing .results-video__tap {
+    opacity: 0;
+    pointer-events: none;
+  }
+  @media (hover: hover) and (pointer: fine) { .results-video__tap svg { width: 60px; height: 60px; } }
+  .results-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    padding: 14px;
+    z-index: 2;
+  }
+
+
+  .header__cta { flex: 0 0 auto; }
+
+  .nav-toggle {
+    display: none;
+    background: none;
+    border: 1px solid var(--line);
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+  }
+  .nav-toggle span, .nav-toggle span::before, .nav-toggle span::after {
+    display: block;
+    content: "";
+    width: 18px;
+    height: 2px;
+    background: var(--ink);
+    position: relative;
+    transition: transform 0.2s var(--ease), opacity 0.2s var(--ease);
+  }
+  .nav-toggle span::before { position: absolute; top: -6px; }
+  .nav-toggle span::after { position: absolute; top: 6px; }
+  .nav-toggle[aria-expanded="true"] span { transform: rotate(45deg); }
+  .nav-toggle[aria-expanded="true"] span::before { transform: translateY(6px) rotate(90deg); }
+  .nav-toggle[aria-expanded="true"] span::after { opacity: 0; }
+
+  /* ---------- Layout wrappers ---------- */
+
+  .wrap-wide { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  .wrap-narrow { max-width: 46rem; margin: 0 auto; padding: 0 24px; }
+
+  .section { padding: clamp(5rem, 3.5rem + 5vw, 8.5rem) 0; }
+  .section--tighter { padding: clamp(3.5rem, 2.5rem + 4vw, 6.5rem) 0; }
+
+  /* ---------- Hero ---------- */
+
+  .hero {
+    padding: calc(var(--header-h) + clamp(4rem, 3rem + 8vw, 9rem)) 0 clamp(4rem, 2.5rem + 6vw, 8rem);
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .hero__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(2.5rem, 2rem + 3vw, 4rem);
+    align-items: center;
+  }
+
+  .hero__logo {
+    width: clamp(150px, 22vw, 230px);
+    height: auto;
+    margin-bottom: clamp(2rem, 1rem + 3vw, 3.5rem);
+  }
+
+  .hero__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 1.05rem + 3vw, 3.35rem);
+    font-weight: 400;
+    line-height: 1.22;
+    letter-spacing: -0.01em;
+    max-width: 19ch;
+  }
+
+  .hero__rule {
+    width: 72px;
+    height: 3px;
+    background: var(--gold);
+    margin: clamp(1.6rem, 1rem + 2vw, 2.6rem) 0;
+  }
+
+  .hero__cta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .hero__media {
+    line-height: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .hero__media img {
+    width: 100%;
+    max-width: 580px;
+    height: auto;
+  }
+
+  @media (min-width: 900px) {
+    .hero__grid {
+      grid-template-columns: 1fr 1.45fr;
+    }
+    .hero {
+      padding-top: calc(var(--header-h) + clamp(1.5rem, 0.75rem + 2vw, 4rem));
+      padding-bottom: clamp(3rem, 2rem + 3vw, 5rem);
+    }
+  }
+
+  @media (max-width: 899px) {
+    .hero__content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .hero__title {
+      margin-inline: auto;
+    }
+    .hero__cta {
+      justify-content: center;
+    }
+  }
+
+  /* Orchestrated entrance — one moment, then quiet */
+  .hero__logo, .hero__title, .hero__rule, .hero__cta, .hero__media {
+    opacity: 0;
+    animation: rise 0.7s var(--ease) forwards;
+  }
+  .hero__logo { animation-delay: 0ms; }
+  .hero__title { animation-delay: 90ms; }
+  .hero__rule { animation-delay: 170ms; transform-origin: left; }
+  .hero__cta { animation-delay: 260ms; }
+  .hero__media { animation-delay: 350ms; }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero__rule { animation-name: draw; animation-duration: 0.7s; }
+  @keyframes draw {
+    from { opacity: 0; transform: scaleX(0); }
+    to { opacity: 1; transform: scaleX(1); }
+  }
+
+  /* ---------- Section headings ---------- */
+
+  .section__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 1.3rem + 1.6vw, 2.9rem);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.012em;
+  }
+
+  .section__title--center {
+    text-align: center;
+  }
+
+  .section__lede {
+    margin: 1.4rem 0 0;
+    max-width: 60ch;
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+
+  /* ---------- About / "Quem criou" ---------- */
+
+  .about__layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "head"
+      "portrait"
+      "identity"
+      "story";
+  }
+
+  .about__head {
+    grid-area: head;
+    margin: 0;
+  }
+
+  .about__portrait {
+    grid-area: portrait;
+    aspect-ratio: 3 / 4;
+    width: min(360px, 100%);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+    padding: var(--portrait-mat);
+    margin-top: clamp(2rem, 1.4rem + 3vw, 4rem);
+  }
+  .about__portrait img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 30%;
+    display: block;
+  }
+  .about__portrait::before,
+  .about__portrait::after {
+    content: "";
+    position: absolute;
+  }
+  .about__portrait::before {
+    inset: var(--portrait-mat);
+    border: 1px solid var(--gold);
+  }
+  .about__portrait::after {
+    inset: calc(var(--portrait-mat) + 6px);
+    border: 1px solid rgba(36, 36, 36, 0.18);
+  }
+
+  .about__identity {
+    grid-area: identity;
+    align-self: center;
+    margin-top: clamp(2rem, 1.5rem + 3vw, 4rem);
+  }
+
+  .about__name {
+    margin: 0 0 0.4rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.7rem, 1.3rem + 1.4vw, 2.3rem);
+    line-height: 1.15;
+    font-weight: 700;
+  }
+
+  .about__role {
+    margin: 0;
+    color: var(--gold);
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  .about__rule {
+    width: 56px;
+    height: 3px;
+    background: var(--gold);
+    margin-top: 1.5rem;
+  }
+
+  .about__story {
+    grid-area: story;
+    margin-top: clamp(2.5rem, 2rem + 3vw, 4rem);
+    padding-top: clamp(1.8rem, 1.4rem + 2vw, 2.6rem);
+    border-top: 1px solid var(--line);
+  }
+
+  .about__story p {
+    margin: 0 0 1em;
+    color: var(--ink);
+  }
+  .about__story p:last-child { margin-bottom: 0; }
+
+  @media (min-width: 900px) {
+    .about__layout {
+      grid-template-columns: minmax(320px, 400px) minmax(0, 1fr);
+      grid-template-areas:
+        "portrait head"
+        "portrait identity"
+        "portrait story";
+      column-gap: clamp(3rem, 2rem + 4vw, 6rem);
+      align-items: start;
+      margin-top: clamp(2.5rem, 2rem + 3vw, 4.5rem);
+    }
+    .about__head {
+      max-width: 26ch;
+    }
+    .about__portrait {
+      width: 100%;
+      margin-top: 0;
+      align-self: center;
+    }
+    .about__identity {
+      align-self: start;
+      margin-top: clamp(1.5rem, 1.2rem + 1vw, 2.2rem);
+    }
+    .about__story {
+      margin-top: clamp(2rem, 1.6rem + 1.5vw, 2.8rem);
+    }
+  }
+
+  @media (max-width: 899px) {
+    .about__head {
+      text-align: center;
+    }
+  }
+
+  /* ---------- Differential ---------- */
+
+  .differential__statement {
+    margin: clamp(2.5rem, 2rem + 3vw, 4rem) 0 0;
+    padding: clamp(1.8rem, 1.4rem + 2vw, 2.8rem);
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .differential__statement::before {
+    content: "";
+    display: block;
+    width: 56px;
+    height: 3px;
+    background: var(--gold);
+    margin-bottom: 1.2rem;
+  }
+
+  .differential__callout {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 1.05rem + 1.4vw, 2rem);
+    line-height: 1.3;
+    font-weight: 400;
+  }
+
+  .differential__intro {
+    margin: 1.6rem 0 0;
+    color: rgba(247, 246, 243, 0.88);
+    max-width: 62ch;
+  }
+  .differential__intro p { margin: 0 0 1em; }
+  .differential__intro p:last-child { margin-bottom: 0; }
+
+  .differential__img {
+    display: none;
+  }
+
+  @media (min-width: 900px) {
+    .differential__statement {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.7fr);
+      gap: clamp(2.5rem, 3vw, 5rem);
+      align-items: center;
+      background: transparent;
+      color: var(--ink);
+      padding: clamp(1.5rem, 1rem + 1vw, 2.5rem) 0;
+      position: relative;
+    }
+    .differential__statement::before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      margin: 0;
+    }
+    .differential__content {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .differential__callout {
+      color: var(--ink);
+    }
+    .differential__intro {
+      margin-top: 1.6rem;
+      color: var(--ink);
+      max-width: 55ch;
+    }
+    .differential__img {
+      display: block;
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: start;
+      align-self: center;
+      width: max(calc(100% + 50vw - 576px), 100%);
+      min-width: 0;
+      height: auto;
+    }
+  }
+
+  .differential__list-title {
+    margin: clamp(2.5rem, 2rem + 3vw, 4rem) 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 1rem + 0.8vw, 1.5rem);
+    font-weight: 400;
+  }
+
+  .differential__list {
+    margin-top: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    border-top: 1px solid var(--line);
+  }
+
+  .differential__item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: clamp(1.2rem, 1rem + 1.5vw, 2rem);
+    padding: clamp(1.4rem, 1.2rem + 1.5vw, 2.2rem) 0;
+    border-bottom: 1px solid var(--line);
+    align-items: start;
+  }
+
+  .differential__num {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--gold);
+    padding-top: 0.35rem;
+  }
+
+  .differential__head {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 1rem + 0.7vw, 1.4rem);
+    font-weight: 700;
+  }
+
+  .differential__body {
+    grid-column: 2;
+    margin: 0.4rem 0 0;
+    color: var(--ink-soft);
+    max-width: 56ch;
+  }
+
+  .differential__closing {
+    margin-top: clamp(2.5rem, 2rem + 3vw, 4rem);
+    padding-top: clamp(1.6rem, 1.2rem + 2vw, 2.6rem);
+    border-top: 2px solid var(--gold);
+    max-width: 46rem;
+  }
+
+  .differential__closing-lead {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 1rem + 0.6vw, 1.4rem);
+    color: var(--ink-soft);
+    font-weight: 400;
+  }
+
+  .differential__closing-em {
+    margin: 0.7rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 1.15rem + 1.4vw, 2.1rem);
+    line-height: 1.25;
+    font-weight: 700;
+  }
+
+  .differential__closing-prose {
+    margin: 1.3rem 0 0;
+    color: var(--ink-soft);
+    max-width: 56ch;
+  }
+
+  @media (min-width: 900px) {
+    .differential__closing {
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+    }
+    .differential__closing-prose {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  /* ---------- Placeholder card (products / testimonials) ---------- */
+
+  .ph-note {
+    margin: 1.4rem auto 0;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    max-width: 60ch;
+  }
+
+  .ph-note strong {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .ph-grid {
+    margin-top: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+
+  @media (min-width: 760px) {
+    .ph-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  /* ---------- Products Carousel Header & Controls ---------- */
+  .products-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .products-header__text {
+    flex: 1 1 260px;
+    text-align: center;
+  }
+
+  .carousel-nav {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 100%;
+    margin-top: 1rem;
+  }
+
+  .carousel-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.2s var(--ease), color 0.2s var(--ease), background 0.2s var(--ease), opacity 0.2s var(--ease), transform 0.15s var(--ease);
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  .carousel-btn:hover:not(:disabled) {
+    border-color: var(--gold);
+    color: var(--gold);
+    transform: translateY(-1px);
+  }
+
+  .carousel-btn:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .carousel-btn:disabled {
+    opacity: 0.28;
+    cursor: not-allowed;
+    border-color: var(--line-soft);
+  }
+
+  @media (min-width: 760px) {
+    .carousel-nav {
+      display: none;
+    }
+  }
+
+  /* ---------- Product Cards (E-commerce Visual Hierarchy) ---------- */
+  .product-grid {
+    margin-top: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 760px) {
+    .product-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+  }
+
+  .product-card {
+    background: #FFFFFF;
+    border: 1px solid rgba(36, 36, 36, 0.1);
+    border-radius: 12px;
+    padding: 1.25rem 1.15rem 1.35rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.25s var(--ease);
+    position: relative;
+  }
+
+  .product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+    border-color: rgba(36, 36, 36, 0.22);
+  }
+
+  .product-card__media {
+    width: 100%;
+    aspect-ratio: 1 / 1.18;
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+  }
+
+  .product-card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s var(--ease);
+  }
+
+  .product-card:hover .product-card__media img {
+    transform: scale(1.03);
+  }
+
+  .product-card__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .product-card__title {
+    font-family: var(--font-body);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--ink);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin: 0 0 0.45rem 0;
+    line-height: 1.25;
+  }
+
+  .product-card__pricing {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin: 0 0 0.25rem 0;
+  }
+
+  .product-card__currency {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .product-card__val {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1;
+  }
+
+  .product-card__installments {
+    font-size: 0.82rem;
+    color: #5C5C5C;
+    line-height: 1.35;
+    margin: 0 0 1.15rem 0;
+  }
+
+  .product-card__btn {
+    margin-top: auto;
+    width: 100%;
+    background: #141414;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.2s var(--ease), transform 0.15s var(--ease);
+  }
+
+  .product-card__btn:hover {
+    background: #2D2D2D;
+    transform: translateY(-1px);
+  }
+
+  .product-card__btn:active {
+    transform: translateY(0);
+  }
+
+  /* Mobile carousel for product-grid (<= 759px) */
+  @media (max-width: 759px) {
+    .product-grid--carousel {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      gap: 10px;
+      margin-top: 1.5rem;
+      padding: 6px 2px 14px;
+    }
+
+    .product-grid--carousel::-webkit-scrollbar {
+      display: none;
+    }
+
+    .product-grid--carousel .product-card {
+      flex: 0 0 calc((100% - 10px) / 2);
+      min-width: calc((100% - 10px) / 2);
+      max-width: calc((100% - 10px) / 2);
+      scroll-snap-align: start;
+      padding: 0.8rem 0.7rem 0.9rem;
+      border-radius: 10px;
+    }
+
+    .product-grid--carousel .product-card__media {
+      margin-bottom: 0.65rem;
+      aspect-ratio: 1 / 1.15;
+    }
+
+    .product-grid--carousel .product-card__title {
+      font-size: 0.85rem;
+      margin-bottom: 0.35rem;
+      letter-spacing: 0.02em;
+    }
+
+    .product-grid--carousel .product-card__currency {
+      font-size: 0.75rem;
+    }
+
+    .product-grid--carousel .product-card__val {
+      font-size: 1.35rem;
+    }
+
+    .product-grid--carousel .product-card__installments {
+      font-size: 0.68rem;
+      margin-bottom: 0.75rem;
+      line-height: 1.25;
+    }
+
+    .product-grid--carousel .product-card__btn {
+      padding: 9px 8px;
+      font-size: 0.78rem;
+      border-radius: 6px;
+      letter-spacing: 0.04em;
+    }
+  }
+
+  /* ---------- Testimonials Infinite Marquee & Cards ---------- */
+  .testimonials-section {
+    overflow: hidden;
+    padding-bottom: clamp(3rem, 2rem + 3vw, 5rem);
+  }
+
+  .testimonials-header {
+    margin-bottom: clamp(2rem, 1.5rem + 1.5vw, 3rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.75rem;
+  }
+
+  .testimonials-header .section__subtitle {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--ink-soft);
+    max-width: 65ch;
+  }
+
+  .testimonials-marquee {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    cursor: grab;
+    padding: 12px 0 20px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: pan-y;
+  }
+
+  .testimonials-marquee:active {
+    cursor: grabbing;
+  }
+
+  .testimonials-track {
+    display: flex;
+    gap: 16px;
+    width: max-content;
+    will-change: transform;
+  }
+
+  .testimonial-card {
+    flex: 0 0 auto;
+    width: clamp(230px, 26vw, 310px);
+    height: clamp(270px, 32vw, 350px);
+    background: #FFFFFF;
+    border-radius: 12px;
+    border: 1px solid rgba(36, 36, 36, 0.12);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.2s var(--ease);
+  }
+
+  .testimonial-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
+    border-color: var(--gold);
+  }
+
+  .testimonial-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+    transition: transform 0.3s var(--ease);
+  }
+
+  .testimonial-card:hover .testimonial-card__img {
+    transform: scale(1.03);
+  }
+
+  .testimonial-card__zoom-hint {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(36, 36, 36, 0.78);
+    backdrop-filter: blur(4px);
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.85);
+    transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .testimonial-card:hover .testimonial-card__zoom-hint {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  @media (hover: none) {
+    .testimonial-card__zoom-hint {
+      opacity: 0.85;
+      transform: scale(0.9);
+    }
+  }
+
+  /* ---------- Lightbox Modal with Zoom ---------- */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(12, 12, 12, 0.94);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s var(--ease), visibility 0.25s;
+    user-select: none;
+  }
+
+  .lightbox.is-open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .lightbox__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    color: #FFFFFF;
+    z-index: 10;
+  }
+
+  .lightbox__counter {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.75);
+    font-weight: 500;
+  }
+
+  .lightbox__actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .lightbox__btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #FFFFFF;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    padding: 0;
+  }
+
+  .lightbox__btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .lightbox__btn--close {
+    font-size: 1.3rem;
+  }
+
+  .lightbox__body {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    touch-action: none;
+  }
+
+  .lightbox__stage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+  }
+
+  .lightbox__stage.is-panning {
+    cursor: grabbing;
+  }
+
+  .lightbox__img {
+    max-width: 90vw;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+    transition: transform 0.1s ease-out;
+    transform-origin: center center;
+    will-change: transform;
+    pointer-events: auto;
+  }
+
+  .lightbox__nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #FFFFFF;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 5;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .lightbox__nav-btn:hover {
+    background: rgba(255, 255, 255, 0.35);
+    color: var(--gold);
+  }
+
+  .lightbox__nav-btn--prev { left: 20px; }
+  .lightbox__nav-btn--next { right: 20px; }
+
+  @media (max-width: 600px) {
+    .lightbox__nav-btn--prev { left: 8px; width: 40px; height: 40px; }
+    .lightbox__nav-btn--next { right: 8px; width: 40px; height: 40px; }
+    .lightbox__header { padding: 12px 16px; }
+  }
+
+  .lightbox__footer {
+    padding: 12px 24px 18px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.82rem;
+    z-index: 10;
+  }
+
+  /* ---------- Closing CTA ---------- */
+
+  .cta-final {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .cta-final__inner {
+    text-align: center;
+  }
+
+  .cta-final__brand {
+    margin: 0 0 0.8rem;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    color: var(--gold);
+  }
+
+  .cta-final__title {
+    margin: 0 auto;
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 1.1rem + 2vw, 2.4rem);
+    font-weight: 400;
+    line-height: 1.3;
+    max-width: 22ch;
+  }
+
+  .cta-final__cta {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .cta-final__contact {
+    margin: 1.6rem 0 0;
+    font-size: 0.9rem;
+    color: rgba(247, 246, 243, 0.7);
+  }
+  .cta-final__contact a,
+  .footer__col a[href^="https://wa.me"],
+  .footer__col a[href^="mailto:"] {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s var(--ease);
+  }
+  .cta-final__contact a:hover,
+  .footer__col a[href^="https://wa.me"]:hover,
+  .footer__col a[href^="mailto:"]:hover {
+    color: var(--gold-bright);
+  }
+
+  /* ---------- Footer ---------- */
+
+  .footer {
+    background: var(--ink);
+    border-top: 1px solid rgba(247, 246, 243, 0.12);
+    padding: clamp(2.5rem, 2rem + 3vw, 4rem) 0 2.5rem;
+    color: rgba(247, 246, 243, 0.85);
+  }
+
+  .footer__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  @media (min-width: 760px) {
+    .footer__grid { grid-template-columns: 2fr 1fr 1fr; }
+  }
+
+  .footer__brand img {
+    height: 44px;
+    width: auto;
+    margin-bottom: 1rem;
+  }
+
+  .footer__brand p {
+    margin: 0;
+    max-width: 40ch;
+    font-size: 0.95rem;
+    color: rgba(247, 246, 243, 0.72);
+  }
+
+  .footer__col h3 {
+    margin: 0 0 0.9rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: rgba(247, 246, 243, 0.55);
+    letter-spacing: 0.02em;
+  }
+
+  .footer__col ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .footer__pending li {
+    font-size: 0.95rem;
+    color: rgba(247, 246, 243, 0.6);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .footer__col a {
+    color: rgba(247, 246, 243, 0.85);
+    text-decoration: none;
+    font-size: 0.95rem;
+  }
+  .footer__col a:hover { color: var(--gold-bright); text-decoration: underline; text-underline-offset: 3px; }
+
+  .footer__bottom {
+    margin-top: 3rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid rgba(247, 246, 243, 0.12);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: rgba(247, 246, 243, 0.55);
+  }
+
+  /* ---------- Scroll reveal (in & out) ---------- */
+
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.65s var(--ease), transform 0.65s var(--ease);
+    will-change: opacity, transform;
+  }
+  [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ---------- Reveal (single moment) ---------- */
+
+  .reveal-target { opacity: 1; }
+  .reveal-target .ph-card,
+  .reveal-target .product-card {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.6s var(--ease), transform 0.6s var(--ease), border-color 0.2s var(--ease);
+  }
+  .reveal-target.is-revealed .ph-card,
+  .reveal-target.is-revealed .product-card { opacity: 1; transform: translateY(0); }
+  .reveal-target.is-revealed .ph-card:nth-child(2),
+  .reveal-target.is-revealed .product-card:nth-child(2) { transition-delay: 80ms; }
+  .reveal-target.is-revealed .ph-card:nth-child(3),
+  .reveal-target.is-revealed .product-card:nth-child(3) { transition-delay: 160ms; }
+
+  /* ---------- Responsive header ---------- */
+
+  @media (max-width: 900px) {
+    .header__nav { gap: 16px; }
+    .header__links {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+      flex-direction: column;
+      align-items: stretch;
+      padding: 12px 24px 20px;
+      gap: 4px;
+    }
+    .header__links.is-open { display: flex; }
+    .header__links a {
+      display: block;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line-soft);
+      font-size: 1.05rem;
+    }
+    .header__links a::after { display: none; }
+    .nav-toggle { display: inline-flex; }
+    .header__cta { display: none; }
+  }
+
+  /* ---------- Reduced motion ---------- */
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    .hero__logo, .hero__title, .hero__rule, .hero__cta, .hero__media { opacity: 1; }
+    [data-reveal] { opacity: 1 !important; transform: none !important; }
+    .reveal-target .ph-card,
+    .reveal-target .product-card { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Pular para o conteúdo</a>
+<div class="gold-bar" aria-hidden="true"></div>
+
+<header class="header">
+  <div class="header__inner">
+    <a class="header__brand" href="#inicio" aria-label="Dermana Skin Care — início">
+      <img class="header__logo" src="logo.png" alt="Dermana Skin Care">
+    </a>
+
+    <nav class="header__nav" aria-label="Navegação principal">
+      <ul class="header__links" id="nav-links">
+        <li><a href="#inicio">Início</a></li>
+        <li><a href="#sobre">Sobre</a></li>
+        <li><a href="#produtos">Produtos</a></li>
+        <li><a href="#depoimentos">Depoimentos</a></li>
+        <li><a href="#contato">Contato</a></li>
+      </ul>
+      <a class="btn btn--gold header__cta" href="#produtos">Comprar</a>
+      <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menu">
+        <span></span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- 1. Hero -->
+  <section class="hero" id="inicio">
+    <div class="wrap-wide hero__grid">
+      <div class="hero__content">
+        <img class="hero__logo" src="logofiuna.png" alt="Dermana Skin Care">
+        <h1 class="hero__title">Protocolos desenvolvidos na prática clínica para transformar sua rotina de skincare.</h1>
+        <div class="hero__rule" aria-hidden="true"></div>
+        <div class="hero__cta">
+          <a class="btn btn--gold" href="#produtos">Ver produtos</a>
+          <a class="btn btn--ghost" href="#sobre">Conhecer a linha</a>
+        </div>
+      </div>
+      <div class="hero__media">
+        <img src="serum-hero.png" alt="Linha de produtos Dermana Skin Care" width="950" height="992" fetchpriority="high">
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Quem criou a DermAna -->
+  <section class="section" id="sobre" aria-labelledby="sobre-title">
+    <div class="wrap-wide about__layout">
+      <h2 class="section__title about__head" id="sobre-title" data-reveal>Quem criou a DermAna?</h2>
+
+      <div class="about__portrait" data-reveal>
+        <img src="fotoana.jpeg" alt="Ana Gonçalves, criadora da Dermana Skin Care">
+      </div>
+
+      <div class="about__identity" data-reveal>
+        <h3 class="about__name">Ana Gonçalves</h3>
+        <p class="about__role">Esteticista Cosmetóloga<br>Especialista em Tratamentos de Melasma</p>
+        <div class="about__rule" aria-hidden="true"></div>
+      </div>
+
+      <div class="about__story" data-reveal>
+        <p>A DermAna nasceu da prática clínica de Ana Gonçalves.</p>
+        <p>Todos os protocolos começaram a ser desenvolvidos e aperfeiçoados a partir dos estudos e da experiência vivenciada na Estética Ana Gonçalves, em Ubá, Minas Gerais.</p>
+        <p>A partir das necessidades observadas na prática, Ana desenvolveu formulações e protocolos de cuidado direcionados às diferentes necessidades da pele.</p>
+        <p>Foi dessa experiência clínica, do conhecimento e da busca por resultados que nasceu a DermAna Skin Care.</p>
+        <p>O que começou na clínica, hoje faz parte da rotina de mulheres em todo o Brasil.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Por que a DermAna é diferente -->
+  <section class="section section--tighter" id="diferencial" aria-labelledby="diferencial-title">
+    <div class="wrap-narrow">
+      <h2 class="section__title section__title--center" id="diferencial-title" data-reveal>Por que a DermAna é diferente das outras marcas de skincare?</h2>
+    </div>
+
+    <div class="wrap-wide">
+      <div class="differential__statement" data-reveal>
+        <div class="differential__content">
+          <p class="differential__callout">Porque a DermAna nasceu para tratar manchas.</p>
+          <div class="differential__intro">
+            <p>Enquanto existem marcas de skincare com produtos para diferentes necessidades da pele, a DermAna tem um propósito muito específico: o cuidado direcionado da hiperpigmentação, das manchas persistentes e do melasma.</p>
+            <p>Não criamos apenas um produto clareador para fazer parte de uma rotina.</p>
+            <p>Criamos uma linha de tratamento, com formulações e protocolos pensados para trabalhar a pele que apresenta manchas que persistem, voltam ou são difíceis de controlar.</p>
+          </div>
+        </div>
+        <img src="elemento1.png" alt="Cuidado direcionado a manchas, hiperpigmentação e melasma" class="differential__img" data-reveal>
+      </div>
+    </div>
+
+    <div class="wrap-narrow">
+      <p class="differential__list-title" data-reveal>O que faz a DermAna ser diferente?</p>
+      <ol class="differential__list" style="list-style:none; margin:0; padding:0;">
+        <li class="differential__item" data-reveal>
+          <span class="differential__num">01</span>
+          <div>
+            <h3 class="differential__head">Uma linha focada em manchas</h3>
+            <p class="differential__body">Cada produto é desenvolvido pensando em uma necessidade específica da pele com hiperpigmentação.</p>
+          </div>
+        </li>
+        <li class="differential__item" data-reveal>
+          <span class="differential__num">02</span>
+          <div>
+            <h3 class="differential__head">Combinação de ativos</h3>
+            <p class="differential__body">As formulações associam diferentes ativos despigmentantes, clareadores, antioxidantes e anti-inflamatórios, permitindo trabalhar diferentes mecanismos relacionados à pigmentação.</p>
+          </div>
+        </li>
+        <li class="differential__item" data-reveal>
+          <span class="differential__num">03</span>
+          <div>
+            <h3 class="differential__head">Estratégia de tratamento</h3>
+            <p class="differential__body">Não é simplesmente escolher um sérum e esperar a mancha desaparecer. Os produtos são organizados em protocolos, com uma função específica para cada etapa da rotina.</p>
+          </div>
+        </li>
+        <li class="differential__item" data-reveal>
+          <span class="differential__num">04</span>
+          <div>
+            <h3 class="differential__head">Foco no melasma</h3>
+            <p class="differential__body">A DermAna foi pensada especialmente para quem enfrenta manchas persistentes e melasma e procura uma rotina de cuidado mais direcionada.</p>
+          </div>
+        </li>
+      </ol>
+      <div class="differential__closing" data-reveal>
+        <p class="differential__closing-lead">Não é um skincare genérico com um produto para manchas.</p>
+        <p class="differential__closing-em">É uma linha construída em torno delas.</p>
+        <p class="differential__closing-prose">Da limpeza ao tratamento e à manutenção, a DermAna foi pensada para transformar o cuidado da pele com manchas em uma rotina estruturada.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Vitrine de produtos -->
+  <section class="section" id="produtos" aria-labelledby="produtos-title">
+    <div class="wrap-wide">
+      <div class="products-header" data-reveal>
+        <div class="products-header__text">
+          <h2 class="section__title" id="produtos-title">Produtos</h2>
+          <p class="ph-note">Linha clínica DermAna desenvolvida para tratamento direcionado de melasma, uniformização e renovação da pele.</p>
+        </div>
+        <div class="carousel-nav" id="product-carousel-nav" aria-label="Navegação do carrossel de produtos">
+          <button type="button" class="carousel-btn carousel-btn--prev" id="product-prev" aria-label="Ver produto anterior" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </button>
+          <button type="button" class="carousel-btn carousel-btn--next" id="product-next" aria-label="Ver próximo produto">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="product-grid product-grid--carousel reveal-target" id="product-grid">
+        <article class="product-card" aria-label="Renova Skin">
+          <div class="product-card__media">
+            <img src="produto-renova-skin.jpg" alt="DermAna Renova Skin" width="300" height="360" loading="lazy">
+          </div>
+          <div class="product-card__body">
+            <h3 class="product-card__title">RENOVA SKIN</h3>
+            <div class="product-card__pricing">
+              <span class="product-card__currency">R$</span>
+              <span class="product-card__val">89</span>
+            </div>
+            <p class="product-card__installments">6x R$ 14,83 (sem juros)</p>
+            <button type="button" class="product-card__btn">ADICIONE</button>
+          </div>
+        </article>
+
+        <article class="product-card" aria-label="Sérum Clareador">
+          <div class="product-card__media">
+            <img src="produto-serum-clareador.jpg" alt="DermAna Sérum Clareador" width="300" height="360" loading="lazy">
+          </div>
+          <div class="product-card__body">
+            <h3 class="product-card__title">SÉRUM CLAREADOR</h3>
+            <div class="product-card__pricing">
+              <span class="product-card__currency">R$</span>
+              <span class="product-card__val">69</span>
+            </div>
+            <p class="product-card__installments">6x R$ 11,50 (sem juros)</p>
+            <button type="button" class="product-card__btn">ADICIONE</button>
+          </div>
+        </article>
+
+        <article class="product-card" aria-label="Sabonete Renovador">
+          <div class="product-card__media">
+            <img src="produto-sabonete-renovador.jpg" alt="DermAna Sabonete Renovador" width="300" height="360" loading="lazy">
+          </div>
+          <div class="product-card__body">
+            <h3 class="product-card__title">SABONETE RENOVADOR</h3>
+            <div class="product-card__pricing">
+              <span class="product-card__currency">R$</span>
+              <span class="product-card__val">59</span>
+            </div>
+            <p class="product-card__installments">6x R$ 9,83 (sem juros)</p>
+            <button type="button" class="product-card__btn">ADICIONE</button>
+          </div>
+        </article>
+      </div>
+      <noscript><style>[data-reveal] { opacity: 1 !important; transform: none !important; } .reveal-target .product-card { opacity: 1; transform: none; }</style></noscript>
+    </div>
+  </section>
+
+  <!-- 5. Resultados Clínicos & Depoimentos -->
+  <section class="section section--tighter testimonials-section" id="depoimentos" aria-labelledby="depoimentos-title">
+    <div class="wrap-wide">
+      <div class="testimonials-header" data-reveal>
+        <h2 class="section__title" id="depoimentos-title">Resultados Clínicos & Depoimentos</h2>
+        <p class="section__subtitle">Resultados reais de pacientes e relatos de quem transformou a pele com os protocolos da DermAna. Arraste para navegar e toque em qualquer foto para ampliar com zoom.</p>
+      </div>
+    </div>
+
+    <div class="testimonials-marquee" id="testimonials-marquee" aria-label="Carrossel contínuo de depoimentos" data-reveal>
+      <div class="testimonials-track" id="testimonials-track"></div>
+    </div>
+  </section>
+
+  <!-- 6. Confira os resultados aqui -->
+  <section class="section results-section" id="results" aria-labelledby="results-title">
+    <div class="wrap-wide results-header" data-reveal>
+      <h2 class="section__title section__title--center" id="results-title">Confira os Resultados Aqui</h2>
+      <p class="section__subtitle">Entre em nossos perfis no Instagram e veja os resultados com os próprios olhos.</p>
+    </div>
+    <div class="wrap-wide results-media" data-reveal>
+      <div class="results-video">
+        <div class="results-video">
+          <div class="results-video__tap" role="button" tabindex="0" aria-label="Reproduzir vídeo" data-video-toggle>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <video class="results-video__media" src="reel-resultados.mp4" controls playsinline preload="metadata" title="Vídeo com os resultados do tratamento"></video>
+      </div>
+      <div class="results-actions">
+        <a class="btn btn--insta" href="https://www.instagram.com/esteticaanagoncalves" target="_blank" rel="noopener">
+          <svg class="btn__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+          Estética Ana Gonçalves
+        </a>
+        <a class="btn btn--insta" href="https://www.instagram.com/dermanaskincare/" target="_blank" rel="noopener">
+          <svg class="btn__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+          DermAna Skin Care
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. CTA final -->
+  <section class="section cta-final" id="contato" aria-labelledby="cta-title">
+    <div class="wrap-wide cta-final__inner" data-reveal>
+      <p class="cta-final__brand">Dermana Skin Care</p>
+      <h2 class="cta-final__title" id="cta-title">Do tratamento clínico para a sua rotina em casa.</h2>
+      <div class="cta-final__cta">
+        <a class="btn btn--light" href="#produtos">Ver produtos</a>
+      </div>
+      <p class="cta-final__contact">
+        <a href="https://wa.me/553284799786" target="_blank" rel="noopener">WhatsApp (32) 8479-9786</a>
+        — <a href="https://www.instagram.com/dermanaskincare/" target="_blank" rel="noopener">Instagram @dermanaskincare</a>
+        — <a href="mailto:anapaulagoncalves153@gmail.com">anapaulagoncalves153@gmail.com</a>
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap-wide">
+    <div class="footer__grid" data-reveal>
+      <div class="footer__brand">
+        <img src="logo.png" alt="Dermana Skin Care">
+        <p>Cuidado direcionado à hiperpigmentação, às manchas persistentes e ao melasma. Nasceu da prática clínica, em Ubá, Minas Gerais.</p>
+      </div>
+      <div class="footer__col">
+        <h3>Navegação</h3>
+        <ul>
+          <li><a href="#inicio">Início</a></li>
+          <li><a href="#sobre">Sobre</a></li>
+          <li><a href="#produtos">Produtos</a></li>
+          <li><a href="#depoimentos">Depoimentos</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h3>Contato</h3>
+        <ul class="footer__pending">
+          <li><a href="https://wa.me/553284799786" target="_blank" rel="noopener">WhatsApp (32) 8479-9786</a></li>
+          <li><a href="https://www.instagram.com/dermanaskincare/" target="_blank" rel="noopener">Instagram @dermanaskincare</a></li>
+          <li><a href="mailto:anapaulagoncalves153@gmail.com">anapaulagoncalves153@gmail.com</a></li>
+          <li>Política de troca — a definir</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© 2026 Dermana Skin Care. Ubá, Minas Gerais.</span>
+      <span>Site em construção — conteúdos finais serão publicados pela cliente.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Lightbox Modal com Zoom e Navegação -->
+<div class="lightbox" id="testimonial-lightbox" role="dialog" aria-modal="true" aria-label="Visualização ampliada do depoimento">
+  <div class="lightbox__header">
+    <span class="lightbox__counter" id="lightbox-counter">1 / 21</span>
+    <div class="lightbox__actions">
+      <button type="button" class="lightbox__btn lightbox__btn--close" id="lightbox-close" aria-label="Fechar visualização" title="Fechar (Esc)">✕</button>
+    </div>
+  </div>
+
+  <div class="lightbox__body" id="lightbox-body">
+    <button type="button" class="lightbox__nav-btn lightbox__nav-btn--prev" id="lightbox-prev" aria-label="Foto anterior">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+
+    <div class="lightbox__stage" id="lightbox-stage">
+      <img src="" alt="Depoimento ou resultado clínico DermAna" class="lightbox__img" id="lightbox-img" draggable="false">
+    </div>
+
+    <button type="button" class="lightbox__nav-btn lightbox__nav-btn--next" id="lightbox-next" aria-label="Próxima foto">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </button>
+  </div>
+
+  <div class="lightbox__footer">
+    <span>Dica: Use a roda do mouse, duplo clique ou pinça no celular para dar zoom. Arraste a imagem para mover quando ampliada.</span>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var toggle = document.getElementById("nav-toggle");
+    var links = document.getElementById("nav-links");
+    if (toggle && links) {
+      toggle.addEventListener("click", function () {
+        var open = toggle.getAttribute("aria-expanded") === "true";
+        toggle.setAttribute("aria-expanded", open ? "false" : "true");
+        toggle.setAttribute("aria-label", open ? "Abrir menu" : "Fechar menu");
+        links.classList.toggle("is-open", !open);
+      });
+      links.addEventListener("click", function (e) {
+        if (e.target.tagName === "A" && toggle.getAttribute("aria-expanded") === "true") {
+          toggle.setAttribute("aria-expanded", "false");
+          toggle.setAttribute("aria-label", "Abrir menu");
+          links.classList.remove("is-open");
+        }
+      });
+    }
+
+    var grid = document.getElementById("product-grid");
+    var prevBtn = document.getElementById("product-prev");
+    var nextBtn = document.getElementById("product-next");
+
+    if (grid) {
+      if ("IntersectionObserver" in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              grid.classList.add("is-revealed");
+            } else {
+              grid.classList.remove("is-revealed");
+            }
+          });
+        }, { threshold: 0.18, rootMargin: "0px 0px -30px 0px" });
+        io.observe(grid);
+      } else {
+        grid.classList.add("is-revealed");
+      }
+
+      if (prevBtn && nextBtn) {
+        function getScrollStep() {
+          var firstCard = grid.querySelector(".product-card") || grid.querySelector(".ph-card");
+          return firstCard ? (firstCard.offsetWidth + 10) : (grid.clientWidth / 2);
+        }
+
+        function updateNavState() {
+          var maxScroll = grid.scrollWidth - grid.clientWidth;
+          if (maxScroll <= 4) {
+            prevBtn.disabled = true;
+            nextBtn.disabled = true;
+            return;
+          }
+          prevBtn.disabled = grid.scrollLeft <= 4;
+          nextBtn.disabled = grid.scrollLeft >= maxScroll - 4;
+        }
+
+        prevBtn.addEventListener("click", function () {
+          grid.scrollBy({ left: -getScrollStep(), behavior: "smooth" });
+        });
+
+        nextBtn.addEventListener("click", function () {
+          grid.scrollBy({ left: getScrollStep(), behavior: "smooth" });
+        });
+
+        grid.addEventListener("scroll", updateNavState, { passive: true });
+        window.addEventListener("resize", updateNavState);
+        setTimeout(updateNavState, 100);
+      }
+    }
+
+    // ---------- Generic scroll reveal (in & out) ----------
+    (function initScrollReveal() {
+      var els = document.querySelectorAll("[data-reveal]");
+      if (!els.length) return;
+      if (!("IntersectionObserver" in window)) {
+        for (var k = 0; k < els.length; k++) els[k].classList.add("is-visible");
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        for (var i = 0; i < entries.length; i++) {
+          if (entries[i].isIntersecting) {
+            entries[i].target.classList.add("is-visible");
+          } else {
+            entries[i].target.classList.remove("is-visible");
+          }
+        }
+      }, { threshold: 0.08, rootMargin: "0px 0px -30px 0px" });
+      for (var j = 0; j < els.length; j++) io.observe(els[j]);
+    })();
+
+    // ---------- Testimonials Infinite Continuous Carousel with Drag/Touch & Lightbox Zoom ----------
+    (function initTestimonialsCarousel() {
+      var marquee = document.getElementById("testimonials-marquee");
+      var track = document.getElementById("testimonials-track");
+      if (!marquee || !track) return;
+
+      var images = [
+        { src: "depoimentos/grttttg.jpeg", label: "Antes e Depois — Melasma" },
+        { src: "depoimentos/WhatsApp%20Image%202026-09-16%20at%2016.01.30.jpeg", label: "Antes e Depois — Clareamento" },
+        { src: "depoimentos/Captura%20de%20tela%202026-09-17%20233437.png", label: "Evolução do Melasma" },
+        { src: "depoimentos/WhatsApp%20Image%202026-09-16%20at%2016.01.32.jpeg", label: "Antes e Depois — Protocolo" },
+        { src: "depoimentos/Captura%20de%20tela%202026-09-17%20233325.png", label: "Tratamento em Clínica" },
+        { src: "depoimentos/Captura%20de%20tela%202026-09-17%20233501.png", label: "Uniformização Facial" },
+        { src: "depoimentos/Captura%20de%20tela%202026-09-17%20233609.png", label: "Controle de Manchas" },
+        { src: "depoimentos/Captura%20de%20tela%202026-09-17%20233627.png", label: "Clareamento Clínico" },
+        { src: "depoimentos/gtththth.jpeg", label: "Resultado Clínico" },
+        { src: "depoimentos/hhhhh.jpeg", label: "Antes e Depois" },
+        { src: "depoimentos/ikikiiik.jpeg", label: "Renovação Facial" },
+        { src: "depoimentos/llllllllll.jpeg", label: "Antes e Depois" },
+        { src: "depoimentos/nheyn.jpeg", label: "Resultado Melasma" },
+        { src: "depoimentos/rgrgpeg.jpeg", label: "Clareamento de Manchas" },
+        { src: "depoimentos/rgrgrerg.jpeg", label: "Antes e Depois" },
+        { src: "depoimentos/rrgr.jpeg", label: "Protocolo DermAna" },
+        { src: "depoimentos/rthrthrht.jpeg", label: "Antes e Depois" },
+        { src: "depoimentos/thrththrhr.jpeg", label: "Antes e Depois" },
+        { src: "depoimentos/werwre.jpeg", label: "Uniformização da Pele" },
+        { src: "depoimentos/yhyhyhyh.jpeg", label: "Antes e Depois" },
+        { src: "depoimentos/yyjttj.jpeg", label: "Resultado Clínico" }
+      ];
+
+      function createCard(item, idx) {
+        var card = document.createElement("div");
+        card.className = "testimonial-card";
+        card.setAttribute("data-index", idx);
+        card.setAttribute("tabindex", "0");
+        card.setAttribute("role", "button");
+        card.setAttribute("aria-label", item.label + " - toque para ampliar com zoom");
+
+        card.innerHTML = 
+          '<img src="' + item.src + '" alt="' + item.label + '" class="testimonial-card__img" loading="lazy">' +
+          '<span class="testimonial-card__zoom-hint" aria-hidden="true">' +
+            '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>' +
+          '</span>';
+        return card;
+      }
+
+      // Append 2 identical sets for seamless wrap
+      for (var i = 0; i < images.length; i++) {
+        track.appendChild(createCard(images[i], i));
+      }
+      for (var j = 0; j < images.length; j++) {
+        track.appendChild(createCard(images[j], j));
+      }
+
+      var isPointerDown = false;
+      var isPaused = false;
+      var startX = 0;
+      var startScrollLeft = 0;
+      var moveDist = 0;
+      var resumeTimer = null;
+      var speed = 0.45; // steady continuous speed
+      var acc = 0;
+      var singleWidth = 0;
+
+      function updateSingleWidth() {
+        singleWidth = track.scrollWidth / 2;
+      }
+
+      function tick() {
+        if (!isPaused && !isPointerDown && singleWidth > 0) {
+          acc += speed;
+          var step = Math.floor(acc);
+          if (step > 0) {
+            acc -= step;
+            marquee.scrollLeft += step;
+            if (marquee.scrollLeft >= singleWidth) {
+              marquee.scrollLeft -= singleWidth;
+            } else if (marquee.scrollLeft <= 0) {
+              marquee.scrollLeft += singleWidth;
+            }
+          }
+        }
+        requestAnimationFrame(tick);
+      }
+
+      setTimeout(function () {
+        updateSingleWidth();
+        requestAnimationFrame(tick);
+      }, 350);
+
+      window.addEventListener("resize", updateSingleWidth);
+
+      // Pause on hover for desktop mouse
+      marquee.addEventListener("mouseenter", function () {
+        isPaused = true;
+      });
+      marquee.addEventListener("mouseleave", function () {
+        if (!isPointerDown) isPaused = false;
+      });
+
+      // Pointer down / move / up handling
+      function handleStart(clientX) {
+        isPointerDown = true;
+        isPaused = true;
+        clearTimeout(resumeTimer);
+        startX = clientX;
+        startScrollLeft = marquee.scrollLeft;
+        moveDist = 0;
+      }
+
+      function handleMove(clientX) {
+        if (!isPointerDown) return;
+        var diff = clientX - startX;
+        moveDist += Math.abs(diff);
+        marquee.scrollLeft = startScrollLeft - diff;
+
+        if (marquee.scrollLeft >= singleWidth) {
+          marquee.scrollLeft -= singleWidth;
+          startScrollLeft -= singleWidth;
+        } else if (marquee.scrollLeft <= 0) {
+          marquee.scrollLeft += singleWidth;
+          startScrollLeft += singleWidth;
+        }
+      }
+
+      function handleEnd() {
+        if (!isPointerDown) return;
+        isPointerDown = false;
+        clearTimeout(resumeTimer);
+        // Resumes smoothly from where user stopped
+        resumeTimer = setTimeout(function () {
+          isPaused = false;
+        }, 500);
+      }
+
+      marquee.addEventListener("mousedown", function (e) {
+        handleStart(e.pageX);
+      });
+      window.addEventListener("mousemove", function (e) {
+        if (isPointerDown) handleMove(e.pageX);
+      });
+      window.addEventListener("mouseup", handleEnd);
+
+      marquee.addEventListener("touchstart", function (e) {
+        if (e.touches && e.touches.length === 1) {
+          handleStart(e.touches[0].pageX);
+        }
+      }, { passive: true });
+
+      window.addEventListener("touchmove", function (e) {
+        if (isPointerDown && e.touches && e.touches.length === 1) {
+          handleMove(e.touches[0].pageX);
+        }
+      }, { passive: true });
+
+      window.addEventListener("touchend", handleEnd, { passive: true });
+      window.addEventListener("touchcancel", handleEnd, { passive: true });
+
+      // Click card to open lightbox (only if not dragged)
+      track.addEventListener("click", function (e) {
+        if (moveDist > 7) {
+          e.preventDefault();
+          return;
+        }
+        var card = e.target.closest(".testimonial-card");
+        if (card) {
+          var idx = parseInt(card.getAttribute("data-index"), 10);
+          if (!isNaN(idx)) {
+            openLightbox(idx);
+          }
+        }
+      });
+
+      // Keyboard access on card
+      track.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") {
+          var card = e.target.closest(".testimonial-card");
+          if (card) {
+            e.preventDefault();
+            var idx = parseInt(card.getAttribute("data-index"), 10);
+            if (!isNaN(idx)) openLightbox(idx);
+          }
+        }
+      });
+
+      // ---------- Lightbox Zoom & Navigation ----------
+      var lightbox = document.getElementById("testimonial-lightbox");
+      var imgEl = document.getElementById("lightbox-img");
+      var counterEl = document.getElementById("lightbox-counter");
+      var btnClose = document.getElementById("lightbox-close");
+      var btnPrev = document.getElementById("lightbox-prev");
+      var btnNext = document.getElementById("lightbox-next");
+      var stageEl = document.getElementById("lightbox-stage");
+
+      var currentIdx = 0;
+      var scale = 1;
+      var panX = 0;
+      var panY = 0;
+      var isPanning = false;
+      var panStartX = 0;
+      var panStartY = 0;
+      var lastPanX = 0;
+      var lastPanY = 0;
+      var touchStartDist = 0;
+      var touchStartScale = 1;
+
+      function renderLightboxImage() {
+        var item = images[currentIdx];
+        imgEl.src = item.src;
+        imgEl.alt = item.label;
+        counterEl.textContent = (currentIdx + 1) + " / " + images.length;
+        resetZoom();
+      }
+
+      function updateTransform() {
+        imgEl.style.transform = "translate(" + panX + "px, " + panY + "px) scale(" + scale + ")";
+        if (scale > 1) {
+          stageEl.classList.add("is-panning");
+        } else {
+          stageEl.classList.remove("is-panning");
+        }
+      }
+
+      function resetZoom() {
+        scale = 1;
+        panX = 0;
+        panY = 0;
+        lastPanX = 0;
+        lastPanY = 0;
+        updateTransform();
+      }
+
+      function zoomIn() {
+        scale = Math.min(scale + 0.5, 4);
+        updateTransform();
+      }
+
+      function zoomOut() {
+        scale = Math.max(scale - 0.5, 1);
+        if (scale === 1) {
+          panX = 0;
+          panY = 0;
+        }
+        updateTransform();
+      }
+
+      window.openLightbox = function (idx) {
+        currentIdx = idx;
+        isPaused = true;
+        renderLightboxImage();
+        lightbox.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+      };
+
+      function closeLightbox() {
+        lightbox.classList.remove("is-open");
+        document.body.style.overflow = "";
+        resetZoom();
+        setTimeout(function () {
+          isPaused = false;
+        }, 400);
+      }
+
+      function prevPhoto() {
+        currentIdx = (currentIdx - 1 + images.length) % images.length;
+        renderLightboxImage();
+      }
+
+      function nextPhoto() {
+        currentIdx = (currentIdx + 1) % images.length;
+        renderLightboxImage();
+      }
+
+      if (btnClose) btnClose.addEventListener("click", closeLightbox);
+      if (btnPrev) btnPrev.addEventListener("click", prevPhoto);
+      if (btnNext) btnNext.addEventListener("click", nextPhoto);
+
+      // Click backdrop to close
+      if (stageEl) {
+        stageEl.addEventListener("click", function (e) {
+          if (e.target === stageEl && scale === 1) {
+            closeLightbox();
+          }
+        });
+      }
+
+      // Double-click to zoom
+      if (imgEl) {
+        imgEl.addEventListener("dblclick", function (e) {
+          e.preventDefault();
+          if (scale > 1.2) {
+            resetZoom();
+          } else {
+            scale = 2.2;
+            panX = 0;
+            panY = 0;
+            updateTransform();
+          }
+        });
+      }
+
+      // Mouse wheel zoom
+      if (stageEl) {
+        stageEl.addEventListener("wheel", function (e) {
+          e.preventDefault();
+          if (e.deltaY < 0) {
+            zoomIn();
+          } else {
+            zoomOut();
+          }
+        }, { passive: false });
+      }
+
+      // Drag / Pan when zoomed
+      function onStagePointerDown(e) {
+        if (scale <= 1) return;
+        isPanning = true;
+        panStartX = e.pageX || (e.touches && e.touches[0].pageX) || 0;
+        panStartY = e.pageY || (e.touches && e.touches[0].pageY) || 0;
+        lastPanX = panX;
+        lastPanY = panY;
+      }
+
+      function onStagePointerMove(e) {
+        if (!isPanning || scale <= 1) return;
+        var curX = e.pageX || (e.touches && e.touches[0].pageX) || 0;
+        var curY = e.pageY || (e.touches && e.touches[0].pageY) || 0;
+        panX = lastPanX + (curX - panStartX);
+        panY = lastPanY + (curY - panStartY);
+        updateTransform();
+      }
+
+      function onStagePointerUp() {
+        isPanning = false;
+      }
+
+      if (stageEl) {
+        stageEl.addEventListener("mousedown", onStagePointerDown);
+        window.addEventListener("mousemove", onStagePointerMove);
+        window.addEventListener("mouseup", onStagePointerUp);
+
+        // Pinch to zoom on touch
+        stageEl.addEventListener("touchstart", function (e) {
+          if (e.touches && e.touches.length === 2) {
+            touchStartDist = Math.hypot(
+              e.touches[0].pageX - e.touches[1].pageX,
+              e.touches[0].pageY - e.touches[1].pageY
+            );
+            touchStartScale = scale;
+          } else if (e.touches && e.touches.length === 1) {
+            onStagePointerDown(e);
+          }
+        }, { passive: true });
+
+        window.addEventListener("touchmove", function (e) {
+          if (e.touches && e.touches.length === 2 && touchStartDist > 0) {
+            var dist = Math.hypot(
+              e.touches[0].pageX - e.touches[1].pageX,
+              e.touches[0].pageY - e.touches[1].pageY
+            );
+            var newScale = touchStartScale * (dist / touchStartDist);
+            scale = Math.min(Math.max(newScale, 1), 4);
+            updateTransform();
+          } else if (isPanning && e.touches && e.touches.length === 1) {
+            onStagePointerMove(e);
+          }
+        }, { passive: true });
+
+        window.addEventListener("touchend", function (e) {
+          if (e.touches && e.touches.length < 2) {
+            touchStartDist = 0;
+          }
+          onStagePointerUp();
+        }, { passive: true });
+      }
+
+      // Keyboard nav
+      window.addEventListener("keydown", function (e) {
+        if (!lightbox.classList.contains("is-open")) return;
+        if (e.key === "Escape") closeLightbox();
+        else if (e.key === "ArrowLeft") prevPhoto();
+        else if (e.key === "ArrowRight") nextPhoto();
+        else if (e.key === "+" || e.key === "=") zoomIn();
+        else if (e.key === "-" || e.key === "_") zoomOut();
+        else if (e.key === "0") resetZoom();
+      });
+    })();
+  })();
+</script>
+
+<script>
+(function () {
+  var wrap = document.querySelector('.results-video');
+  var media = document.querySelector('.results-video__media');
+  var tap = document.querySelector('.results-video__tap');
+  if (!wrap || !media || !tap) return;
+  function sync() { wrap.classList.toggle('is-playing', !media.paused && !media.ended); }
+  tap.addEventListener('click', function () {
+    if (media.paused || media.ended) { media.play(); } else { media.pause(); }
+  });
+  ['play', 'pause', 'ended', 'playing', 'seeking'].forEach(function (ev) { media.addEventListener(ev, sync); });
+  sync();
+})();
+</script>
+</body>
+</html>
