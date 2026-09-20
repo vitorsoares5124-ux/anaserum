@@ -26,7 +26,9 @@ module.exports = async function (req, res) {
       return responder(res, 200, lista);
     }
     if (req.method === 'POST') {
-      const r = await h.criar(req.body || {});
+      const { lerCorpo } = require('../lib/ler-corpo');
+      const corpo = await lerCorpo(req);
+      const r = await h.criar(corpo && typeof corpo === 'object' ? corpo : {});
       return responder(res, r.status, r.dados);
     }
     res.setHeader('Allow', 'GET, POST');

@@ -142,12 +142,15 @@ function criarDraftOrder(pedido) {
   });
 }
 
+var lerCorpo = require('../lib/ler-corpo').lerCorpo;
+
 var rota = async function (req, res) {
   if (req.method !== 'POST') return responder(res, 405, { erros: ['Metodo deve ser POST'] });
 
   var corpo = {};
-  try { corpo = JSON.parse(req.body || '{}'); }
-  catch (e) { return responder(res, 400, { erros: ['JSON invalido no corpo'] }); }
+  try { corpo = await lerCorpo(req); }
+  catch (e) { return responder(res, 400, { erros: [e.message || 'JSON invalido no corpo'] }); }
+  if (!corpo || typeof corpo !== 'object') corpo = {};
 
   var validado = validarPedido(corpo);
   if (validado.erros) return responder(res, 400, { erros: validado.erros });

@@ -24,7 +24,9 @@ module.exports = async function (req, res) {
       res.setHeader('Allow', 'POST');
       return responder(res, 405, { erro: 'Metodo nao permitido' });
     }
-    const r = await h.excluir((req.body || {}).id);
+    const { lerCorpo } = require('../lib/ler-corpo');
+    const corpo = await lerCorpo(req);
+    const r = await h.excluir((corpo && typeof corpo === 'object' ? corpo : {}).id);
     return responder(res, r.status, r.dados);
   } catch (err) {
     return responder(res, 500, { erro: String((err && err.message) || err) });
