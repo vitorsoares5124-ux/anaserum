@@ -1808,8 +1808,12 @@
         return;
       }
       if (statusEl) statusEl.remove();
+      // Liga cada produto ao variant_id da Nuvemshop (fonte única: /api/catalogo).
+      // Sem correspondência = sem compra online (botão indisponível, sem WhatsApp).
+      var cat = window._dermanaCatalogo || { slugs: [], supabaseIdMap: {}, aliases: {} };
+      var slugSet = {};
+      (cat.slugs || []).forEach(function (s) { slugSet[s] = true; });
       grid.innerHTML = produtos.map(function (p) {
-        var slug = slugify(p.titulo) + '-' + p.id;
         var preco = precoNum(p.preco);
         var parcQtd = (p.parcelas && parseInt(p.parcelas.qtd, 10)) || 6;
         if (parcQtd < 1) parcQtd = 1;
@@ -1818,20 +1822,42 @@
         if (parcQtd > 1 && !parcVal && preco) parcVal = (preco/parcQtd).toFixed(2).replace('.',',');
         var parc = (parcQtd > 1 && parcVal) ? parcQtd + 'x R$ ' + parcVal + ' (sem juros)' : '';
         var foto = p.foto || 'serum.png';
-        var pagTipo = p.pagamento && p.pagamento.tipo || 'whatsapp';
-        var pagVal = pagTipo === 'whatsapp' ? (p.pagamento.numero||'') : (p.pagamento.url||'');
-        return '<article class="product-card" aria-label="' + escapeHtml(p.titulo) + '" data-slug="' + escapeHtml(slug) + '" data-id="' + p.id + '" data-pag-tipo="' + escapeHtml(pagTipo) + '" data-pag-valor="' + escapeHtml(pagVal) + '" data-descricao="' + escapeHtml(p.descricao||'') + '" data-parcelas-qtd="' + parcQtd + '" data-parcelas-valor="' + escapeHtml(parcVal) + '">'
+        var baseSlug = slugify(p.titulo);
+        var cslug = (cat.supabaseIdMap && cat.supabaseIdMap[p.id]) || null;
+        if (!cslug) {
+          if (slugSet[baseSlug]) cslug = baseSlug;
+          else if (cat.aliases && cat.aliases[baseSlug] && slugSet[cat.aliases[baseSlug]]) cslug = cat.aliases[baseSlug];
+        }
+        var comprável = !!cslug;
+        var botao = comprável
+          ? '<button type="button" class="product-card__btn">ADICIONE</button>'
+          : '<button type="button" class="product-card__btn" disabled title="Indisponível para compra online">INDISPONÍVEL</button>';
+        return '<article class="product-card" aria-label="' + escapeHtml(p.titulo) + '"' + (comprável ? ' data-slug="' + escapeHtml(cslug) + '"' : '') + ' data-id="' + p.id + '" data-descricao="' + escapeHtml(p.descricao||'') + '" data-parcelas-qtd="' + parcQtd + '" data-parcelas-valor="' + escapeHtml(parcVal) + '">'
           + '<div class="product-card__media"><img src="' + escapeHtml(foto) + '" alt="' + escapeHtml(p.titulo) + '" width="300" height="360" loading="lazy"></div>'
           + '<div class="product-card__body"><h3 class="product-card__title">' + escapeHtml(p.titulo.toUpperCase()) + '</h3>'
           + '<div class="product-card__pricing"><span class="product-card__currency">R$</span><span class="product-card__val">' + escapeHtml(String(p.preco).replace(',','.').replace(/\..*$/,'')) + '</span></div>'
           + (parc ? '<p class="product-card__installments">' + parc + '</p>' : '')
-          + '<button type="button" class="product-card__btn">ADICIONE</button></div></article>';
+          + botao + '</div></article>';
       }).join('');
       // re-dispatch para handlers de modal/carrinho que usam querySelectorAll
       try { document.dispatchEvent(new CustomEvent('dermana:produtos-carregados')); } catch(e){}
     }
 
-    fetch('/api/produtos').then(function(r){ return r.json(); }).then(function(d){
+    // Catálogo público primeiro (para marcar indisponíveis), depois os produtos
+    Promise.all([
+      fetch('/api/catalogo').then(function(r){ return r.json(); }).catch(function(){ return null; }),
+      fetch('/api/produtos').then(function(r){ return r.json(); }).catch(function(){ return null; })
+    ]).then(function (res) {
+      var cat = res[0], d = res[1];
+      if (cat && cat.supabaseIdMap) {
+        window._dermanaCatalogo = {
+          slugs: (cat.produtos || []).map(function (x) { return x.slug; }),
+          supabaseIdMap: cat.supabaseIdMap,
+          aliases: cat.aliases || {}
+        };
+      } else {
+        window._dermanaCatalogo = { slugs: [], supabaseIdMap: {}, aliases: {} };
+      }
       if (Array.isArray(d)) render(d);
       else render([]);
     }).catch(function(){
@@ -2513,7 +2539,7 @@
 </script>
 <script>
   // (removido script legado que sobrescrevia o grid sem data-slug - bug que fazia todos produtos virarem o mesmo no carrinho)
-  // O carregamento correto está no script após #product-grid (com data-slug + data-pag-tipo)
+  // O carregamento correto está no script após #product-grid (com data-slug do catálogo Nuvemshop)
 </script>
 <div class="pmodal" id="pmodal" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Detalhes do produto">
   <div class="pmodal__card">
@@ -2530,9 +2556,34 @@
           <span class="pmodal__qtd-val" id="pmodal-qtd">1</span>
           <button type="button" class="pmodal__qtd-btn" id="pmodal-mais" aria-label="Aumentar">+</button>
         </div>
-        <a class="pmodal__comprar" id="pmodal-comprar" href="#" onclick="event.preventDefault(); if (window.DermanaCarrinho) { var card=document.querySelector('[data-dermana-slug]'); if(card){ var slug=card.getAttribute('data-dermana-slug'); var tituloEl=card.querySelector('.product-card__title'); var titulo=tituloEl?tituloEl.textContent.trim():slug; var preco=Number(card.getAttribute('data-dermana-preco'))||0; var pagTipo=card.getAttribute('data-dermana-pag-tipo')||''; var pagValor=card.getAttribute('data-dermana-pag-valor')||''; var foto=card.getAttribute('data-dermana-foto')||''; var desc=card.getAttribute('data-dermana-desc')||''; var qtdEl=document.getElementById('pmodal-qtd'); var qtd=qtdEl?parseInt(qtdEl.textContent,10)||1:1; window.DermanaCarrinho.adicionar(slug,titulo,preco,{pag_tipo:pagTipo,pag_valor:pagValor,foto:foto,descricao:desc,quantidade:qtd}); } var m=document.getElementById('pmodal'); if(m) m.classList.remove('is-open'); document.body.classList.remove('modal-aberto'); if(m) m.setAttribute('aria-hidden','true'); } this.blur();">ADICIONE</a>
+        <a class="pmodal__comprar" id="pmodal-comprar" href="#" onclick="event.preventDefault(); if (window.DermanaCarrinho) { var card=document.querySelector('[data-dermana-slug]'); if(card){ var slug=card.getAttribute('data-dermana-slug'); var tituloEl=card.querySelector('.product-card__title'); var titulo=tituloEl?tituloEl.textContent.trim():slug; var preco=Number(card.getAttribute('data-dermana-preco'))||0; var supId=card.getAttribute('data-dermana-supabaseid')||''; var foto=card.getAttribute('data-dermana-foto')||''; var desc=card.getAttribute('data-dermana-desc')||''; var qtdEl=document.getElementById('pmodal-qtd'); var qtd=qtdEl?parseInt(qtdEl.textContent,10)||1:1; window.DermanaCarrinho.adicionar(slug,titulo,preco,{supabaseId:supId?Number(supId):null,foto:foto,descricao:desc,quantidade:qtd}); } var m=document.getElementById('pmodal'); if(m) m.classList.remove('is-open'); document.body.classList.remove('modal-aberto'); if(m) m.setAttribute('aria-hidden','true'); } this.blur();">ADICIONE</a>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Modal de checkout: nome, sobrenome e e-mail (vai para a Nuvemshop) -->
+<div class="cmodal" id="cmodal" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Finalizar pedido">
+  <div class="cmodal__card">
+    <button type="button" class="cmodal__fechar" id="cmodal-fechar" aria-label="Fechar">&#10005;</button>
+    <h3 class="cmodal__titulo">Finalizar pedido</h3>
+    <p class="cmodal__sub">Preencha seus dados para ir ao checkout seguro.</p>
+    <form id="cmodal-form" novalidate>
+      <div class="cmodal__field">
+        <label for="cmodal-nome">Nome</label>
+        <input type="text" id="cmodal-nome" autocomplete="given-name" placeholder="Seu nome" required>
+      </div>
+      <div class="cmodal__field">
+        <label for="cmodal-sobrenome">Sobrenome</label>
+        <input type="text" id="cmodal-sobrenome" autocomplete="family-name" placeholder="Seu sobrenome" required>
+      </div>
+      <div class="cmodal__field">
+        <label for="cmodal-email">E-mail</label>
+        <input type="email" id="cmodal-email" autocomplete="email" placeholder="voce@email.com" required>
+      </div>
+      <p class="cmodal__erro" id="cmodal-erro" role="alert" hidden></p>
+      <button type="submit" class="cmodal__enviar" id="cmodal-enviar">IR PARA O PAGAMENTO</button>
+    </form>
   </div>
 </div>
 
@@ -2586,24 +2637,30 @@
     parc.style.display = parc.textContent ? "" : "none";
 
     var comprar = document.getElementById("pmodal-comprar");
-    comprar.style.display = "";
     comprar.removeAttribute("href");
 
-    // iFood: armazena referencia do produto para ADICIONE do modal
+    // iFood: armazena referencia do produto para ADICIONE do modal.
+    // data-slug aqui já é o slug do catálogo Nuvemshop (ou ausente = indisponível).
     var slug = card.getAttribute('data-slug') || '';
+    var supabaseId = card.getAttribute('data-id') || '';
     var precoNum = valEl ? Number(valEl.textContent.replace(/\D/g, '')) : 0;
-    var pagTipo = card.getAttribute('data-pag-tipo') || '';
-    var pagValor = card.getAttribute('data-pag-valor') || '';
     var pagFoto = (card.querySelector('.product-card__media img')||{}).src || '';
     var descCard = card.getAttribute('data-descricao') || (descEl && descEl.textContent) || '';
     // limpa marcacao anterior e marca o atual
-    document.querySelectorAll('[data-dermana-slug]').forEach(function (el) { el.removeAttribute('data-dermana-slug'); el.removeAttribute('data-dermana-preco'); el.removeAttribute('data-dermana-pag-tipo'); el.removeAttribute('data-dermana-pag-valor'); });
-    card.setAttribute('data-dermana-slug', slug);
-    card.setAttribute('data-dermana-preco', String(precoNum));
-    if (pagTipo) card.setAttribute('data-dermana-pag-tipo', pagTipo);
-    if (pagValor) card.setAttribute('data-dermana-pag-valor', pagValor);
-    if (pagFoto) card.setAttribute('data-dermana-foto', pagFoto);
-    if (descCard) card.setAttribute('data-dermana-desc', descCard);
+    document.querySelectorAll('[data-dermana-slug]').forEach(function (el) { el.removeAttribute('data-dermana-slug'); el.removeAttribute('data-dermana-preco'); el.removeAttribute('data-dermana-supabaseid'); });
+    if (slug) {
+      comprar.style.display = "";
+      card.setAttribute('data-dermana-slug', slug);
+      card.setAttribute('data-dermana-preco', String(precoNum));
+      if (supabaseId) card.setAttribute('data-dermana-supabaseid', supabaseId);
+      if (pagFoto) card.setAttribute('data-dermana-foto', pagFoto);
+      if (descCard) card.setAttribute('data-dermana-desc', descCard);
+    } else {
+      // Sem variant_id: visível, mas sem compra online
+      comprar.style.display = "none";
+      parc.textContent = "Indisponível para compra online no momento.";
+      parc.style.display = "";
+    }
 
     // reseta quantidade do modal iFood para 1
     var qtdEl = document.getElementById('pmodal-qtd');
@@ -2791,7 +2848,7 @@
                 // menos: remove e readiciona quantidade-1
                 window.DermanaCarrinho.remover(slug);
                 var novaQtd = (achou.quantidade||1) - 1;
-                for (var i=0;i<novaQtd;i++) window.DermanaCarrinho.adicionar(slug, achou.nome, achou.preco, {pag_tipo: achou.pag_tipo, pag_valor: achou.pag_valor, foto: achou.foto});
+                for (var i=0;i<novaQtd;i++) window.DermanaCarrinho.adicionar(slug, achou.nome, achou.preco, {supabaseId: achou.supabaseId != null ? achou.supabaseId : null, foto: achou.foto});
               }
             }
           }
@@ -2811,68 +2868,60 @@
     if (itensEl) itensEl.addEventListener('click', handleCarrinhoClick);
     document.addEventListener('click', handleCarrinhoClick);
 
-    // Finalizar pedido - suporta produtos do admin (whatsapp/link) e legado Nuvemshop
+    // Finalizar pedido — 100% Nuvemshop: cria draft_order e redireciona ao checkout_url.
+    // Sem WhatsApp: produto sem variant_id é rejeitado pelo backend como indisponível.
+    var cmodal = document.getElementById('cmodal');
+    var cform = document.getElementById('cmodal-form');
+    var cNome = document.getElementById('cmodal-nome');
+    var cSobre = document.getElementById('cmodal-sobrenome');
+    var cEmail = document.getElementById('cmodal-email');
+    var cErro = document.getElementById('cmodal-erro');
+    var cEnviar = document.getElementById('cmodal-enviar');
+    var cFechar = document.getElementById('cmodal-fechar');
+
+    function mostrarErroCheckout(msg) {
+      if (!cErro) { alert(msg); return; }
+      cErro.textContent = msg;
+      cErro.hidden = false;
+    }
+    function abrirCheckout() {
+      if (cErro) { cErro.textContent = ''; cErro.hidden = true; }
+      if (cmodal) { cmodal.classList.add('is-open'); cmodal.setAttribute('aria-hidden', 'false'); }
+      if (cNome) cNome.focus();
+    }
+    function fecharCheckout() {
+      if (cmodal) { cmodal.classList.remove('is-open'); cmodal.setAttribute('aria-hidden', 'true'); }
+    }
+    if (cFechar) cFechar.addEventListener('click', fecharCheckout);
+    if (cmodal) cmodal.addEventListener('click', function (e) { if (e.target === cmodal) fecharCheckout(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && cmodal && cmodal.classList.contains('is-open')) fecharCheckout(); });
+
     if (finalizarBtn) {
       finalizarBtn.addEventListener('click', function () {
         if (!window.DermanaCarrinho || window.DermanaCarrinho.itens().length === 0) {
-          alert('Seu carrinho está vazio.');
+          mostrarErroCheckout('Seu carrinho está vazio.');
           return;
         }
-        var itens = window.DermanaCarrinho.itens();
-        var temAdmin = itens.some(function (it) { return it.pag_tipo; });
+        abrirCheckout();
+      });
+    }
 
-        if (temAdmin) {
-          // Fluxo admin: usa pagamento cadastrado no painel (sem Nuvemshop)
-          var nomeCompleto2 = (prompt('Digite seu nome completo:') || '').trim();
-          if (!nomeCompleto2) return;
-          var total = window.DermanaCarrinho.total();
-          var linhas = itens.map(function (it) { return '- ' + it.nome + ' x' + (it.quantidade||1) + ' (R$ ' + Number(it.preco).toFixed(2).replace('.',',') + ')'; }).join('\n');
-          var tipos = {}; itens.forEach(function (it) { if (it.pag_tipo) tipos[it.pag_tipo] = (tipos[it.pag_tipo]||0)+1; });
-          var whatsItens = itens.filter(function (it) { return it.pag_tipo === 'whatsapp'; });
-          var linkItens = itens.filter(function (it) { return it.pag_tipo === 'link'; });
-
-          if (whatsItens.length && !linkItens.length) {
-            // só WhatsApp -> abre wa.me do primeiro produto com resumo
-            var num = (whatsItens[0].pag_valor||'').replace(/\D/g,'');
-            if (!num) { alert('Número de WhatsApp não configurado para este produto.'); return; }
-            var msg = 'Olá! Sou ' + nomeCompleto2 + ' e quero finalizar meu pedido DermAna:\n' + linhas + '\nTotal: R$ ' + total.toFixed(2).replace('.',',');
-            window.open('https://wa.me/55' + num + '?text=' + encodeURIComponent(msg), '_blank');
-            return;
-          }
-          if (linkItens.length && !whatsItens.length) {
-            var url = linkItens[0].pag_valor;
-            if (!/^https?:\/\//i.test(url)) { alert('Link de pagamento inválido para este produto.'); return; }
-            // se todos links iguais, abre um; se diferentes avisa
-            var unicos = {}; linkItens.forEach(function (it) { unicos[it.pag_valor]=true; });
-            if (Object.keys(unicos).length === 1) {
-              window.open(url, '_blank');
-            } else {
-              var msgLink = 'Você tem ' + linkItens.length + ' produtos com links diferentes. Abrindo o primeiro link. Demais links:\n' + linkItens.map(function (it){ return it.nome + ': ' + it.pag_valor; }).join('\n');
-              alert(msgLink);
-              window.open(url, '_blank');
-            }
-            return;
-          }
-          // misto whatsapp + link
-          var numMisto = (whatsItens[0] && whatsItens[0].pag_valor || '').replace(/\D/g,'');
-          var msgMisto = 'Olá! Sou ' + nomeCompleto2 + ' e quero finalizar meu pedido DermAna (carrinho misto):\n' + linhas + '\nTotal: R$ ' + total.toFixed(2).replace('.',',') + '\n\nLinks de pagamento:\n' + linkItens.map(function(it){ return it.nome + ': ' + it.pag_valor; }).join('\n');
-          if (numMisto) window.open('https://wa.me/55' + numMisto + '?text=' + encodeURIComponent(msgMisto), '_blank');
-          else alert(msgMisto);
+    if (cform) {
+      cform.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        var nome = (cNome && cNome.value || '').trim();
+        var sobrenome = (cSobre && cSobre.value || '').trim();
+        var email = (cEmail && cEmail.value || '').trim();
+        if (!nome) { mostrarErroCheckout('Informe seu nome.'); return; }
+        if (!sobrenome) { mostrarErroCheckout('Informe seu sobrenome.'); return; }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { mostrarErroCheckout('Informe um e-mail válido.'); return; }
+        if (!window.DermanaCarrinho || window.DermanaCarrinho.itens().length === 0) {
+          mostrarErroCheckout('Seu carrinho está vazio.');
           return;
         }
-
-        // Fluxo legado Nuvemshop (produtos antigos com variant_id)
-        var nomeCompleto = (prompt('Digite seu nome completo:') || '').trim();
-        if (!nomeCompleto) return;
-        var partes = nomeCompleto.split(/\s+/);
-        var nome = partes[0] || nomeCompleto;
-        var sobrenome = partes.slice(1).join(' ') || partes[0] || 'Dermana';
-        var email = (prompt('Digite seu e-mail:') || '').trim();
-        if (!email) return;
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
-          alert('Por favor, digite um e-mail válido.');
-          return;
-        }
+        // Estado de carregamento + anti duplo clique
+        if (cEnviar) { cEnviar.disabled = true; cEnviar.textContent = 'GERANDO PAGAMENTO…'; }
+        if (cErro) { cErro.textContent = ''; cErro.hidden = true; }
         fetch('/api/pedido', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -2880,23 +2929,31 @@
             nome: nome,
             sobrenome: sobrenome,
             email: email,
-            itens: window.DermanaCarrinho.itens().map(function (it) { return { slug: it.slug, quantidade: it.quantidade || 1, quantity: it.quantidade || 1 }; })
+            // Só slug + quantidade. Preço, nome e variant_id nunca saem do front:
+            // o backend resolve o variant_id na fonte única e o preço vem da Nuvemshop.
+            itens: window.DermanaCarrinho.itens().map(function (it) {
+              return { slug: it.slug, quantidade: it.quantidade || 1, supabaseId: it.supabaseId != null ? it.supabaseId : undefined };
+            })
           })
         })
-        .then(function (r) { return r.json(); })
-        .then(function (dados) {
-          if (dados.erros) {
-            alert('Erro ao finalizar: ' + dados.erros.join(', '));
+        .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, dados: d }; }); })
+        .then(function (res) {
+          if (!res.ok || (res.dados && res.dados.erros)) {
+            var msg = (res.dados && res.dados.erros && res.dados.erros.join(', ')) || 'Não foi possível gerar o pagamento. Tente novamente.';
+            mostrarErroCheckout(msg);
             return;
           }
-          if (dados.checkout_url) {
-            window.location.href = dados.checkout_url;
+          if (res.dados && res.dados.checkout_url) {
+            window.location.href = res.dados.checkout_url;
           } else {
-            alert('Resposta inesperada do servidor: ' + JSON.stringify(dados));
+            mostrarErroCheckout('Resposta inesperada do servidor. Tente novamente.');
           }
         })
-        .catch(function (err) {
-          alert('Erro de conexão: ' + err.message);
+        .catch(function () {
+          mostrarErroCheckout('Erro de conexão. Verifique sua internet e tente novamente.');
+        })
+        .finally(function () {
+          if (cEnviar) { cEnviar.disabled = false; cEnviar.textContent = 'IR PARA O PAGAMENTO'; }
         });
       });
     }

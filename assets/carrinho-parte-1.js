@@ -37,9 +37,9 @@
     if (qtdAdd > 20) qtdAdd = 20;
     var achou = estado.filter(function (it) { return it.slug === slug; })[0];
     if (achou) achou.quantidade += qtdAdd;
-    else estado.push({ slug: slug, nome: nome || slug, preco: Number(preco) || 0, quantidade: qtdAdd, pag_tipo: extra.pag_tipo || null, pag_valor: extra.pag_valor || null, foto: extra.foto || null, descricao: extra.descricao || '' });
+    else estado.push({ slug: slug, nome: nome || slug, preco: Number(preco) || 0, quantidade: qtdAdd, supabaseId: extra.supabaseId != null ? extra.supabaseId : null, foto: extra.foto || null, descricao: extra.descricao || '' });
     // atualiza dados se vieram depois
-    if (achou && extra.pag_tipo) { achou.pag_tipo = extra.pag_tipo; achou.pag_valor = extra.pag_valor; }
+    if (achou && extra.supabaseId != null) { achou.supabaseId = extra.supabaseId; }
     salvar();
   };
 

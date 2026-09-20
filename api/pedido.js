@@ -36,15 +36,20 @@ function emailValido(e) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(e || '').trim());
 }
 /* =====================================================================
-   PARTE-B: mapa slug -> variant_id + validacao COMPLETA do pedido
+   PARTE-B: catalogo Nuvemshop (fonte unica) + validacao COMPLETA
+   ---------------------------------------------------------------------
+   Fonte unica: lib/produtos-nuvemshop.js (8 produtos).
+   Aceita slug com ou sem sufixo "-<id>" do front (ex: "creme-clareador-60g-3"),
+   alias de titulo divergente, product_id ou variant_id direto.
+   So aceita variant_ids desta lista, quantidade inteira 1..20.
+   Preco NUNCA vem do front: vai so variant_id + quantity no draft_order.
    ===================================================================== */
 
-var MAPA_SLUG_VARIANTE = {
-  'renova-skin': 1392130929,
-  'kit-dermana-diario': 1395798129,
-  'sabonete-renovador-dermana': 1395799510,
-  'serum-antioxidante-dermana': 1396333916
-};
+var catalogo = require('../lib/produtos-nuvemshop');
+
+// Compat: mesmo nome de antes, agora derivado da fonte unica (8 itens).
+var MAPA_SLUG_VARIANTE = {};
+catalogo.CATALOGO.forEach(function (p) { MAPA_SLUG_VARIANTE[p.slug] = p.variant_id; });
 
 function validarPedido(corpo) {
   corpo = corpo || {};
@@ -56,9 +61,7 @@ function validarPedido(corpo) {
   var itens = Array.isArray(corpo.itens) ? corpo.itens.slice(0, 20) : [];
 
   if (!nome) erros.push('Informe seu nome');
-  // sobrenome opcional para fluxo iFood (prompt só pede nome) - usa nome como fallback
-  if (!sobrenome && nome) sobrenome = nome.split(' ').slice(-1)[0] || nome;
-  if (!sobrenome) sobrenome = 'Dermana';
+  if (!sobrenome) erros.push('Informe seu sobrenome');
   if (!emailValido(email)) erros.push('Informe um e-mail valido');
 
   if (!itens.length) {
@@ -66,12 +69,12 @@ function validarPedido(corpo) {
   } else {
     for (var i = 0; i < itens.length; i++) {
       var it = itens[i] || {};
-      var slug = slugSeguro(it.slug);
       var qtd = Number(it.quantidade != null ? it.quantidade : it.quantity);
-      var vid = MAPA_SLUG_VARIANTE[slug];
-      if (!vid) { erros.push('Produto nao disponivel: ' + (slug || '(vazio)')); continue; }
-      if (!Number.isInteger(qtd) || qtd < 1 || qtd > 20) { erros.push('Quantidade invalida em "' + slug + '" (use 1 a 20)'); continue; }
-      resolvidos.push({ variant_id: vid, quantity: qtd });
+      var prod = catalogo.resolver(it);
+      var rotulo = slugSeguro(it.slug) || String(it.variant_id || it.product_id || '(vazio)');
+      if (!prod) { erros.push('Produto nao disponivel: ' + rotulo); continue; }
+      if (!Number.isInteger(qtd) || qtd < 1 || qtd > 20) { erros.push('Quantidade invalida em "' + prod.slug + '" (use 1 a 20)'); continue; }
+      resolvidos.push({ variant_id: prod.variant_id, quantity: qtd });
     }
   }
 
@@ -81,8 +84,6 @@ function validarPedido(corpo) {
     dados: { nome: nome, sobrenome: sobrenome, email: email, products: resolvidos }
   };
 }
-
-module.exports = { validar: validarPedido, MAPA_SLUG_VARIANTE: MAPA_SLUG_VARIANTE };
 /* =====================================================================
    PARTE-C: criacao do DRAFT ORDER na Nuvemshop + ROTA (module.exports)
    ===================================================================== */
@@ -92,8 +93,15 @@ var baseNuvem = 'https://api.nuvemshop.com.br/v1/';
 function montarDraft(pedido) {
   var products = pedido.products || [];
   if (!products.length) return { erros: ['Nenhum produto para enviar'] };
+  if (!pedido.email) return { erros: ['Informe um e-mail valido'] };
+  // A Nuvemshop exige contato no draft_order; nome/sobrenome/email já validados acima.
   return {
+    contact_email: pedido.email,
+    contact_name: pedido.nome,
+    contact_lastname: pedido.sobrenome,
     products: products.map(function (p) {
+      // Só variant_id + quantity. Preço, nome e variant do front nunca entram aqui:
+      // variant_id veio da fonte única (lib/produtos-nuvemshop.js) e o preço vem da Nuvemshop.
       return { variant_id: p.variant_id, quantity: p.quantity };
     })
   };
@@ -154,5 +162,9 @@ var rota = async function (req, res) {
     total: draft.total
   });
 };
+
+rota.validar = validarPedido;
+rota.MAPA_SLUG_VARIANTE = MAPA_SLUG_VARIANTE;
+rota.CATALOGO = catalogo.CATALOGO;
 
 module.exports = rota;

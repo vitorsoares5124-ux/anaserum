@@ -107,6 +107,18 @@ const server = http.createServer(async function (req, res) {
       } catch (err) { return json(res, 500, { erro: String(err.message || err) }); }
     }
 
+    // ---- API: catalogo publico Nuvemshop (slugs + mapas, sem segredos) ----
+    if (pathname === '/api/catalogo' && req.method === 'GET') {
+      try {
+        const catalogo = require('../lib/produtos-nuvemshop');
+        return json(res, 200, {
+          produtos: catalogo.CATALOGO.map(function (p) { return { slug: p.slug, nome: p.nome }; }),
+          supabaseIdMap: catalogo.SUPABASE_ID_MAP,
+          aliases: catalogo.ALIAS_SLUG
+        });
+      } catch (err) { return json(res, 500, { erro: String(err.message || err) }); }
+    }
+
     // ---- API: cadastrar produto ----
     if (pathname === '/api/produtos' && req.method === 'POST') {
       const corpo = await lerCorpo(req);
